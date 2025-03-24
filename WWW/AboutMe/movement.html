@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Projects</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <nav id="topnav">
+            <a href="index.html">ABOUT ME</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="hobbies.html">INTERESTS</a>
+        </nav>
+        
+        <main>
+
+            <h1>Linux System Info</h1>
+
+            <img src="images/Movement.png" alt="App Photo">
+
+            <p>The package itself is designed to be modular. Below is a script responsible for handling moving the
+            character through 3D space on uneven surfaces</p>
+
+                  <pre class="myCode">
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody), typeof(InputHandler))]
+public class MovementController : MonoBehaviour
+{
+   private Rigidbody _rb;
+   private InputHandler _input;
+
+   private Vector3 _playerMoveInput;
+   private Vector3 _normalAdjustedMoveInput;
+
+   private bool _isGrounded = true;
+   private Vector3 _groundNormal = Vector3.up;
+   private bool _onEdge;
+
+   [HideInInspector] public float currentMaxSpeed;
+
+   [Header("Ground handling")]
+   [SerializeField] private LayerMask groundLayer;
+
+   [Header("Acceleration")]
+   [SerializeField] private float acceleration = 30.0f;
+
+   [Header("Drag")]
+   [SerializeField] private float groundDrag = 4.0f;
+   [SerializeField] private float airDrag = 0.1f;
+
+
+   private void Start()
+   {
+      _rb = GetComponent Rigidbody>();
+      _input = GetComponent InputHandler>();
+   }
+
+   private void Awake()
+   {
+      currentMaxSpeed = 1.8f;
+   }
+
+   private void FixedUpdate()
+   {
+      GroundCheck();
+      ApplyDrag();
+      GetMoveInput();
+
+      if (_isGrounded)
+      {
+         ApplySlopeDependentFriction();
+         _normalAdjustedMoveInput = Vector3.ProjectOnPlane(_playerMoveInput, _groundNormal).normalized;
+         DetectEdge();
+         MovePlayer();
+      }
+      ClampVelocity();
+      // Eventual air movement
+   }
+
+   private void GroundCheck()
+   {
+      if (Physics.SphereCast(transform.position + Vector3.up * 0.35f, 0.345f,
+             Vector3.down, out RaycastHit hit, 0.06f, groundLayer.value))
+      {
+         _groundNormal = hit.normal;
+         _isGrounded = true;
+      }
+      else
+      {
+         _groundNormal = Vector3.up;
+         _isGrounded = false;
+      }
+   }
+
+   private void ApplyDrag()
+   {
+      _rb.linearDamping = _isGrounded ? groundDrag : airDrag;
+   }
+
+   private void GetMoveInput()
+   {
+      Vector3 localInput = new Vector3(_input.MoveInput.x, 0, _input.MoveInput.y);
+      _playerMoveInput = transform.TransformDirection(localInput);
+   }
+
+   private void ApplySlopeDependentFriction()
+   {
+      Vector3 slopeForce = Vector3.ProjectOnPlane(Physics.gravity, _groundNormal);
+      _rb.AddForce(-slopeForce, ForceMode.Acceleration);
+   }
+
+   private void DetectEdge()
+   {
+      //TODO get max slope sticking distance and convert into max ray distance
+      _onEdge = !Physics.Raycast(transform.position + _normalAdjustedMoveInput * 0.05f + Vector3.up * 0.1f,
+         Vector3.down, 0.3f, groundLayer.value);
+   }
+
+   private void MovePlayer()
+   {
+      if (!_onEdge) _playerMoveInput = _normalAdjustedMoveInput;
+
+      _playerMoveInput *= acceleration * Time.fixedDeltaTime;
+
+      _rb.AddForce(_playerMoveInput, ForceMode.Acceleration);
+   }
+
+   private void ClampVelocity()
+   {
+      Vector3 preClampedVelocity = _rb.linearVelocity;
+      float yVelocity = preClampedVelocity.y;
+      if(!_isGrounded) preClampedVelocity.y = 0;
+
+      Vector3 clampedVelocity = Vector3.ClampMagnitude(preClampedVelocity, currentMaxSpeed);
+      if(!_isGrounded) clampedVelocity.y = yVelocity;
+
+      _rb.linearVelocity = clampedVelocity;
+   }
+}
+                </pre>
+        </main>
+
+        <footer>
+            <p><b>Contact me: </b> m.korzeniewski2004@gmail.com <br>
+                <b>GitHub: </b> <a href="https://github.com/MichKorz/" target="_blank">MichKorz@GitHub</a> <br> &copy;2025 My Portfolio</p>
+        </footer>
+
+    </body>
+</html>

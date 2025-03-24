@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Projects</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <nav id="topnav">
+            <a href="index.html">ABOUT ME</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="hobbies.html">INTERESTS</a>
+        </nav>
+        
+        <main>
+
+            <h1>Chinese Checkers</h1>
+
+            <img src="images/checkers.jpg" alt="Chinese Checkers Photo">
+
+            <p>This Chinese Checkers game is a multiplayer application developed in Java, 
+                allowing up to six players to compete simultaneously. The game uses sockets 
+                to handle real-time communication between players, ensuring a smooth and responsive
+                 gameplay experience. <a href="https://github.com/MichKorz/Lab_4">Check out the project!</a></p>
+
+            <pre class="myCode">
+    public void LaunchClient(GUIController controller)
+    {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Listener listener = new Listener(reader, controller);
+        executor.execute(listener);
+
+        try
+        {
+            out = new PrintWriter(socket.getOutputStream(), true);
+            controller.client = this;
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+            </pre>
+
+            <p>A key feature of this project is its ability to save and load 
+                games, supported by a MySQL database that records ongoing matches and past moves. 
+                This allows players to pause and resume their games at any time. The project 
+                showcases skills in network programming, database management, and Java-based 
+                game development, making it a well-rounded application that emphasizes both 
+                technical complexity and user experience.</p>
+
+            <pre class="myCode">
+    public boolean ValidateMove(String move)
+    {
+        if(move.isEmpty()) return false;
+
+        String[] splitMove = move.split(" ");
+        if (splitMove[0].equals("E"))
+            return false;
+
+        int[] commands = new int[splitMove.length];
+        for (int i = 0; i < splitMove.length; i++) {
+            commands[i] = Integer.parseInt(splitMove[i]);
+        }
+
+        Boolean validation = ruleset.validateMove(commands, isTurnOver);
+        if(validation) {
+            movesMade++;
+            howManyPlayersWon = board.HowManyPlayersWon(howManyPlayersWon, commands[4]);
+            return true;
+        }
+        return false;
+
+    }
+            </pre>
+
+            <p>The project uses several design patterns like singleton, factory and state.</p>
+
+            <pre class="myCode">
+    public interface GameState
+    {
+        void stateLoop() throws IOException;
+        void endState();
+    }
+            </pre>
+
+
+        </main>
+
+        <footer>
+            <p><b>Contact me: </b> m.korzeniewski2004@gmail.com <br>
+                <b>GitHub: </b> <a href="https://github.com/MichKorz/" target="_blank">MichKorz@GitHub</a> <br> &copy;2025 My Portfolio</p>
+        </footer>
+    </body>
+</html>
