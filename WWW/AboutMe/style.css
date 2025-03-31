@@ -1,158 +1,171 @@
-@media (min-width: 850px)
-{
-    main
-    {
-        grid-template-columns: 1fr 1fr;
-    }
-    hr
-    {
-        grid-column: span 2; /* Ensures it spans across both columns */
-    }
+@media (min-width: 850) {
+  main {
+    grid-template-columns: 1fr 1fr;
+  }
+  hr {
+    grid-column: span 2; /* Ensures it spans across both columns */
+  }
 }
-
 html, body {
-    overflow-x: hidden;
-    max-width: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
-    margin: 0;
-    font-family: sans-serif, Verdana, Arial, Helvetica;
-    display: grid;
-    grid-template-rows: auto 1fr auto; /* Header, Main, Footer */
-    min-height: 100vh;
-    background-color: #000000;
-    color: #FFFFFF;
+  margin: 0;
+  font-family: sans-serif, Verdana, Arial, Helvetica;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Header, Main, Footer */
+  min-height: 100vh;
+  background-color: #000000;
+  color: #FFFFFF;
 }
 
 main {
-    display: grid;
-    grid-template-columns: 1fr; /* Single column on mobile */
-    gap: 20px;
-    padding: 20px;
-    margin: 0 auto;
-    width: 90%;
-    max-width: 1200px;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 1200px;
 }
 
 h2 {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 p {
-    font-size: 17px;
+  font-size: 17px;
 }
 
 pre, code {
-    display: block;
-    margin: auto;
-    font-size: 16px;
-    border-radius: 10px;
+  display: block;
+  margin: auto;
+  font-size: 16px;
+  border-radius: 10px;
 }
 
 .myCode {
-    background: #0e0e0e;
-    color: rgb(201, 201, 201);
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-    overflow-x: auto;
-    white-space: pre;
-    display: block;
-    max-width: 100%;
-    border-radius: 10px;
+  background: #000000;
+  color: #FFFFFF;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  overflow-x: auto;
+  white-space: pre;
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  width: 100%;
 }
 
 hr {
-    width: 100%;
-    height: 1px;
-    border: none;
-    background: black;
-}
-
-img {
-    display: block;
-    margin: auto;
-    width: 100%;
-    padding-bottom: 10px;
-    border-radius: 10px 10px 20px 20px;
+  width: 100%;
+  height: 1px;
+  border: none;
+  background: #000000;
 }
 
 a {
-    color: rgba(0, 218, 11, 0.89);
-}
-
-main {
-    grid-template-columns: 1fr;
-    justify-items: center;
-}
-
-img {
-    width: 92%;
-    max-width: 600px;
-}
-
-hr {
-    width: 92%;
-}
-
-pre, code {
-    width: 100%;
+  color: rgba(0, 218, 11, 0.89);
 }
 
 /* Keep navigation in Flexbox */
 #topnav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    overflow-x: auto;
-    white-space: nowrap;
-    background-color: #131313;
-    display: flex;
-    padding: 10px;
-    justify-content: left;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+  white-space: nowrap;
+  background-color: #131313;
+  display: flex;
+  padding: 10px;
+  justify-content: left;
 }
-
-#logo {
-    height: 40px;
-    margin: 2px 5px 0 5px;
-    width: auto;
-}
-
 #topnav a {
-    display: inline-block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 10px;
-    text-decoration: none;
-    font-size: 17px;
+  display: inline-block;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 14px 10px;
+  text-decoration: none;
+  font-size: 17px;
 }
-
 #topnav a:hover {
-    color: #FF6B6B; /* Professional but eye-catching effect */
+  color: #FF6B6B; /* Professional but eye-catching effect */
 }
 
 footer {
-    background: radial-gradient(circle at top right, #ff7e5f, #7a2623);
-    color: white;
-    text-align: center;
-    padding: 10px;
-    width: 100%;
-    position: relative;
+  background: radial-gradient(circle at top right, #ff7e5f, #7a2623);
+  color: #FFFFFF;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  position: relative;
 }
 
-
-
-
+img {
+  max-width: 600px;
+  width: 92%;
+}
 
 /* Base styles for mobile (text above the image) */
-.image-container {
-    display: flex;
-    flex-direction: column;
-    margin: 20px 0;
-    position: relative;
+.image-container, .image-container-mirrored {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+  position: relative;
+  /* Trapezoid effect for larger screens */
 }
-
-.image-container::before {
+.image-container::before, .image-container-mirrored::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, #ff7e5f, #7a2623);
+  clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 100% 0%); /* Trapezoid shape */
+  z-index: 1;
+  border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
+}
+.image-container img, .image-container-mirrored img {
+  width: 90%;
+  display: block;
+  position: relative;
+  border-radius: 20px 20px 20px 20px;
+  z-index: 2;
+}
+.image-container p, .image-container-mirrored p {
+  font-size: 18px;
+  line-height: 1.5;
+  text-align: left;
+  margin-left: 35px; /* Pushes text away from the image */
+  z-index: 3;
+}
+.image-container h2, .image-container-mirrored h2 {
+  margin-left: 35px;
+  margin-top: 30px;
+}
+.image-container section, .image-container-mirrored section {
+  grid-area: text;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+@media (min-width: 850px) {
+  .image-container, .image-container-mirrored {
+    position: relative;
+    display: grid;
+    grid-template-areas: "text image";
+    grid-template-columns: 40% 60%; /* Image takes 40%, text takes 60% */
+    gap: 1px;
+    justify-content: center;
+    align-items: center;
+    grid-column: span 2; /* Makes the container span across two columns */
+  }
+  .image-container::before, .image-container-mirrored::before {
     content: "";
     position: absolute;
     top: 0;
@@ -160,206 +173,41 @@ footer {
     width: 100%;
     height: 100%;
     background: radial-gradient(circle at top right, #ff7e5f, #7a2623);
-    clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 100% 0%); /* Trapezoid shape */
+    clip-path: polygon(45% 100%, 0% 100%, 0% 0%, 50% 0%); /* Trapezoid shape */
     z-index: 1;
     border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
-}
-
-.image-container img {
-    width: 90%;
-    display: block;
-    position: relative;
-    border-radius: 20px 20px 20px 20px;
-    z-index: 2;
-
-}
-
-.image-container p {
-    font-size: 18px;
-    line-height: 1.5;
+  }
+  .image-container p, .image-container-mirrored p {
     text-align: left;
-    margin-left: 35px; /* Pushes text away from the image */
-    z-index: 3;
-}
-
-.image-container h2 {
-    margin-left: 35px;
-    margin-top: 30px;
-}
-
-.image-container section
-{
+    margin-left: 50px; /* Pushes text away from the image */
+    margin-right: 50px; /* Pushes text away from the image */
+  }
+  .image-container h2, .image-container-mirrored h2 {
+    margin-left: 50px;
+  }
+  .image-container section, .image-container-mirrored section {
     grid-area: text;
-    z-index: 3;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-}
-
-/* Trapezoid effect for larger screens */
-@media (min-width: 850px) {
-    .image-container {
-        position: relative;
-        display: grid;
-        grid-template-areas: "text image";
-        grid-template-columns: 40% 60%; /* Image takes 40%, text takes 60% */
-        gap: 1px;
-        justify-content: center;
-        align-items: center;
-        grid-column: span 2; /* Makes the container span across two columns */
-    }
-
-    .image-container::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at top right, #ff7e5f, #7a2623);
-        clip-path: polygon(45% 100%, 0% 100%, 0% 0%, 50% 0%); /* Trapezoid shape */
-        z-index: 1;
-        border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
-    }
-
-    .image-container p
-    {
-        text-align: left;
-        margin-left: 50px; /* Pushes text away from the image */
-    }
-
-    .image-container h2
-    {
-        margin-left: 50px;
-    }
-
-    .image-container section
-    {
-        grid-area: text;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .image-container img
-    {
-        grid-area: image;
-        z-index: 0;
-        height: 99.5%;
-        width: 100%;
-    }
-}
-
-
-
-
-/* Base styles for mobile (text above the image) */
-.image-container-mirrored {
-    display: flex;
-    flex-direction: column;
-    margin: 20px 0;
-    position: relative;
-}
-
-.image-container-mirrored::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
+  }
+  .image-container img, .image-container-mirrored img {
+    grid-area: image;
+    padding-top: 1px;
+    z-index: 0;
+    height: 99%;
     width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at top right, #ff7e5f, #7a2623);
-    clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 100% 0%); /* Trapezoid shape */
-    z-index: 1;
-    border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
+  }
 }
 
-.image-container-mirrored img {
-    width: 90%;
-    display: block;
-    position: relative;
-    border-radius: 20px 20px 20px 20px;
-    z-index: 2;
-}
-
-.image-container-mirrored p {
-    font-size: 18px;
-    line-height: 1.5;
-    text-align: left;
-    margin-left: 35px; /* Pushes text away from the image */
-    z-index: 3;
-}
-
-.image-container-mirrored h2 {
-    margin-left: 35px;
-    margin-top: 30px;
-}
-
-.image-container-mirrored section
-{
-    grid-area: text;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-/* Trapezoid effect for larger screens */
 @media (min-width: 850px) {
-    .image-container-mirrored {
-        position: relative;
-        display: grid;
-        grid-template-areas: "image text";  /* Stack image on top of text by default */
-        grid-template-columns: 40% 60%; /* Image takes 40%, text takes 60% */
-        gap: 1px;
-        justify-content: center;
-        align-items: center;
-        grid-column: span 2; /* Makes the container span across two columns */
-    }
-
-    .image-container-mirrored::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at top left, #ff7e5f, #7a2623);
-        clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 35% 100%); /* Trapezoid shape */
-        z-index: 1;
-        border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
-    }
-
-    .image-container-mirrored p
-    {
-        text-align: right;
-        margin-right: 50px; /* Pushes text away from the image */
-    }
-
-    .image-container-mirrored h2
-    {
-        margin-right: 50px;
-    }
-
-    .image-container-mirrored section
-    {
-        grid-area: text;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-
-    .image-container-mirrored img
-    {
-        grid-area: image;
-        z-index: 0;
-        height: 99.5%;
-        width: 100%;
-    }
+  .image-container-mirrored {
+    grid-template-areas: "image text";
+  }
+  .image-container-mirrored::before {
+    clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 35% 100%);
+  }
 }
 
-
-
-
+/*# sourceMappingURL=style.css.map */
