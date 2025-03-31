@@ -6,6 +6,14 @@
     grid-column: span 2; /* Ensures it spans across both columns */
   }
 }
+h1 {
+  font-size: 1.875rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
 html, body {
   overflow-x: hidden;
   max-width: 100%;
@@ -30,10 +38,6 @@ main {
   margin: 0 auto;
   width: 90%;
   max-width: 1200px;
-}
-
-h2 {
-  font-size: 18px;
 }
 
 p {
