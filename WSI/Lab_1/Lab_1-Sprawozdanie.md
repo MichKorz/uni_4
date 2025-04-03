@@ -1,0 +1,24 @@
+
+## Zadanie 1
+Celność ogólna: 98.66%
+Precyzja: 
+ 0.98585859 0.98003472 0.98373206 0.98050682 0.99686848 0.98758465
+ 0.98955068 0.99698189 0.98779247 0.97918731
+Czułość:
+ 0.99591837 0.99471366 0.99612403 0.9960396  0.97250509 0.9809417
+ 0.98851775 0.96400778 0.99691992 0.97918731
+
+## Zadanie 2
+Celność na własnym piśmie: 77%
+Sieć sklasyfikowała wszystkie "6" jako "5"
+Większość "1" jako "2"
+Oraz większość "9" jako "3"
+Prawdopodobnie, różnice w zapisie 3, 1 i 6 w porównaniu do oryginału przyczyniły się do ich klasyfikacji jako inne, 'najpodobniejsze' cyfry
+
+## Zadanie 3
+Celność: 97.05%
+Precyzja: 0.96809571 0.98773006 0.96161228 0.96333003 0.9744898  0.97616345
+ 0.97604167 0.97154073 0.96173733 0.96292585
+Czułość: 0.99081633 0.99295154 0.97093023 0.96237624 0.97250509 0.96412556
+ 0.97807933 0.96303502 0.95482546 0.95242815
+ 

@@ -1,3 +1,5 @@
+import numpy as np
+
 class DataLoader:
 
     def __init__(self, train_data_path, train_labels_path, test_data_path, test_labels_path):
@@ -82,4 +84,4 @@ class DataLoader:
                 answers = [float(line[i]) for i in range(len(line))]
                 test_labels.append(answers)
 
-        return train_data, train_labels, test_data, test_labels
+        return np.array(train_data), np.array(train_labels), np.array(test_data), np.array(test_labels)
