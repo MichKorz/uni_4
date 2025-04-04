@@ -3,6 +3,8 @@ $white: #FFFFFF;
 $deep_red: #7a2623;
 $light_orange: #ff7e5f;
 
+$large_screen: 850px;
+
 
 @mixin responsive($size) {
     @media (min-width: $size) {
@@ -10,7 +12,7 @@ $light_orange: #ff7e5f;
     }
 }
 
-@include responsive(850)
+@include responsive($large_screen)
 {
     main
     {
@@ -183,7 +185,7 @@ img
     }
 
     /* Trapezoid effect for larger screens */
-    @include responsive(850px) {
+    @include responsive($large_screen) {
         position: relative;
         display: grid;
         grid-template-areas: "text image";
@@ -239,7 +241,7 @@ img
 .image-container-mirrored {
     @extend .image-container;
 
-    @include responsive(850px) {
+    @include responsive($large_screen) {
         grid-template-areas: "image text";
 
         &::before {

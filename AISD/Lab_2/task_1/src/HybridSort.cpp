@@ -1,7 +1,27 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int partition(vector<int>& arr, int low, int high) {
+/* Function to sort array using insertion sort */
+void insertionSort(vector<int>& arr, int n)
+{
+    for (int i = 1; i < n; ++i) {
+        int key = arr[i];
+        int j = i - 1;
+
+        /* Move elements of arr[0..i-1], that are
+           greater than key, to one position ahead
+           of their current position */
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+int partition(vector<int>& arr, int low, int high) 
+{
   
     // Choose the pivot
     int pivot = arr[high];
@@ -27,9 +47,16 @@ int partition(vector<int>& arr, int low, int high) {
 }
 
 // The QuickSort function implementation
-void quickSort(vector<int>& arr, int low, int high) {
+void quickSort(vector<int>& arr, int low, int high) 
+{
+
+    if(arr.size() < 10)
+    {
+        insertionSort(arr, arr.size());
+    }
   
-    if (low < high) {
+    if (low < high) 
+    {
       
         // pi is the partition return index of pivot
         int pi = partition(arr, low, high);
@@ -41,12 +68,22 @@ void quickSort(vector<int>& arr, int low, int high) {
     }
 }
 
-int main() {
-    vector<int> arr = {10, 7, 8, 9, 1, 5};
-    int n = arr.size();
+int main() 
+{
+    int n;
+    cin>>n;
+    vector<int> arr(n);
+    
+    for (int i = 0; i < n; i++)
+    {
+        cin >> arr[i];
+    }
+
+
     quickSort(arr, 0, n - 1);
   
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) 
+    {
         cout << arr[i] << " ";
     }
     return 0;

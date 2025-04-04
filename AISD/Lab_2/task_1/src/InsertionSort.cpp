@@ -1,8 +1,10 @@
 #include <iostream>
+#include <vector>
+
 using namespace std;
 
 /* Function to sort array using insertion sort */
-void insertionSort(int arr[], int n)
+void insertionSort(vector<int>& arr, int n)
 {
     for (int i = 1; i < n; ++i) {
         int key = arr[i];
@@ -20,7 +22,7 @@ void insertionSort(int arr[], int n)
 }
 
 /* A utility function to print array of size n */
-void printArray(int arr[], int n)
+void printArray(vector<int>& arr, int n)
 {
     for (int i = 0; i < n; ++i)
         cout << arr[i] << " ";
@@ -30,8 +32,14 @@ void printArray(int arr[], int n)
 // Driver method
 int main()
 {
-    int arr[] = { 12, 11, 13, 5, 6 };
-    int n = sizeof(arr) / sizeof(arr[0]);
+    int n;
+    cin>>n;
+    vector<int> arr(n);
+    
+    for (int i = 0; i < n; i++)
+    {
+        cin >> arr[i];
+    }
 
     insertionSort(arr, n);
     printArray(arr, n);
