@@ -17,6 +17,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    std::cout << n << "\n";
+
     std::random_device rd;
     std::mt19937 mt(rd()); // Mersenne Twister engine
     std::uniform_int_distribution<int> dist(0, 2 * n - 1);
