@@ -1,44 +1,41 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
+
+int comparisons = 0, swaps = 0;
 
 int partition(vector<int>& arr, int low, int high) 
 {
-  
     // Choose the pivot
     int pivot = arr[high];
-  
-    // Index of smaller element and indicates 
-    // the right position of pivot found so far
     int i = low - 1;
 
-    // Traverse arr[low..high] and move all smaller
-    // elements on left side. Elements from low to 
-    // i are smaller after every iteration
-    for (int j = low; j <= high - 1; j++) {
+    // Traverse arr[low..high] and move all smaller elements to the left
+    for (int j = low; j <= high - 1; j++) 
+    {
+        comparisons++; // Count comparison
         if (arr[j] < pivot) {
             i++;
             swap(arr[i], arr[j]);
+            swaps++; // Count swap
         }
     }
     
-    // Move pivot after smaller elements and
-    // return its position
+    // Move pivot after smaller elements and return its position
     swap(arr[i + 1], arr[high]);  
+    swaps++; // Count pivot swap
     return i + 1;
 }
 
-// The QuickSort function implementation
+// QuickSort function implementation
 void quickSort(vector<int>& arr, int low, int high) 
 {
-  
     if (low < high) 
     {
-      
-        // pi is the partition return index of pivot
+        // Partition and get pivot index
         int pi = partition(arr, low, high);
 
-        // Recursion calls for smaller elements
-        // and greater or equals elements
+        // Recursive calls
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
     }
@@ -47,7 +44,7 @@ void quickSort(vector<int>& arr, int low, int high)
 int main() 
 {
     int n;
-    cin>>n;
+    cin >> n;
     vector<int> arr(n);
     
     for (int i = 0; i < n; i++)
@@ -55,12 +52,15 @@ int main()
         cin >> arr[i];
     }
 
-
     quickSort(arr, 0, n - 1);
   
-    for (int i = 0; i < n; i++) 
+    /*for (int i = 0; i < n; i++) 
     {
         cout << arr[i] << " ";
-    }
+    }*/
+    
+    cout << comparisons << endl;
+    cout << swaps << endl;
+
     return 0;
 }

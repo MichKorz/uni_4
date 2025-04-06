@@ -46,6 +46,8 @@ int main(int argc, char* argv[])
     // Sort the numbers in descending order
     std::sort(numbers.begin(), numbers.end(), std::greater<int>());
 
+    std::cout << n << '\n';
+
     // Print the sorted numbers
     for (int num : numbers) 
     {
