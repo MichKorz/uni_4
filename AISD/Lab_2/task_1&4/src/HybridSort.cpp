@@ -86,17 +86,20 @@ int main()
     for (int i = 0; i < n; i++) 
     {
         cin >> arr[i];
+        cout << arr[i];
     }
+    cout << endl;
 
     quickSort(arr, 0, n - 1);
 
-    /*for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n; i++) 
     {
         cout << arr[i] << " ";
-    }*/
+    }
+    cout << endl;
 
-    cout << comparisons << endl;
-    cout << swaps << endl;
+    cout << "Comparisons: " <<comparisons << endl;
+    cout << "Swaps: " << swaps << endl;
 
     return 0;
 }

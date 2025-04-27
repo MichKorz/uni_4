@@ -1,0 +1,114 @@
+/* Keep navigation in Flexbox */
+#topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+  white-space: nowrap;
+  background-color: #131313;
+  display: flex;
+  padding: 10px;
+  justify-content: left;
+
+  a {
+    display: inline-block;
+    color: $c_text;
+    text-align: center;
+    padding: 14px 10px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  a:hover {
+    color: #FF6B6B; /* Professional but eye-catching effect */
+  }
+}
+
+.hamburger {
+  all: unset; /* Resets all styles, optional but useful */
+  position: absolute;
+  z-index: 200;
+  width: auto; /* don't stretch! */
+  max-width: fit-content; /* only as big as the content */
+  font-size: 2.5rem;
+  background-color: $c_background;
+  color: $c_text;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  transform: translateX(0%);
+  transition: transform $menu_animation_speed ease;
+  display: none;
+}
+
+.hamburger.open{
+  transform: translateX(-$menu_width);
+}
+
+@include responsive($large_screen)
+{
+  .hamburger {
+    top: 1rem;
+    left: 1rem;
+  }
+  .hamburger.open{
+    transform: translateX($menu_width);
+  }
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  margin-top: 1%;
+  width: $menu-width;
+  background: $c_background;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform $menu_animation_speed ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+
+  a {
+    display: inline-block;
+    color: $c_text;
+    text-align: center;
+    padding: 14px 10px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  a:hover {
+    color: #FF6B6B; /* Professional but eye-catching effect */
+  }
+}
+
+.side-menu.open {
+  transform: translateX(0);
+}
+
+@include responsive($large_screen)
+{
+  .side-menu {
+    left: 0;
+    transform: translateX(-100%);
+  }
+}
+
+.page-content {
+  transform: translateX(0%); /* start at normal */
+  transition: transform $menu_animation_speed ease;
+}
+
+.page-content.moved {
+  transform: translateX(-$menu-width/2);
+}
+
+@include responsive($large_screen)
+{
+  .page-content.moved {
+    transform: translateX($menu-width/2);
+  }
+}

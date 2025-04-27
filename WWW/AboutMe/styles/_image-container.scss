@@ -1,0 +1,125 @@
+/* Base styles for mobile (text above the image) */
+.image-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, $c_gradient_2, $c_gradient_1);
+    clip-path: polygon(100% 100%, 0% 100%, 0% 0%, 100% 0%); /* Trapezoid shape */
+    z-index: 1;
+    border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
+  }
+
+  img {
+    width: 90%;
+    display: block;
+    position: relative;
+    border-radius: 20px 20px 20px 20px;
+    z-index: 2;
+    margin: 0 auto 30px auto;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.5;
+    text-align: left;
+    margin-left: 35px; /* Pushes text away from the image */
+    z-index: 3;
+  }
+
+  h2 {
+    margin-left: 35px;
+    margin-top: 30px;
+  }
+
+  section {
+    grid-area: text;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Trapezoid effect for larger screens */
+  @include responsive($large_screen) {
+    position: relative;
+    display: grid;
+    grid-template-areas: "text image";
+    grid-template-columns: 40% 60%; /* Image takes 40%, text takes 60% */
+    gap: 1px;
+    justify-content: center;
+    align-items: center;
+    grid-column: span 2; /* Makes the container span across two columns */
+
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, $c_gradient_2, $c_gradient_1);
+      clip-path: polygon(45% 100%, 0% 100%, 0% 0%, 50% 0%); /* Trapezoid shape */
+      z-index: 1;
+      border-radius: 20px 20px 20px 20px; /* Optional: match the image's rounded corners */
+    }
+
+    p {
+      text-align: left;
+      margin-left: 50px; /* Pushes text away from the image */
+      margin-right: 50px; /* Pushes text away from the image */
+    }
+
+    h2 {
+      margin-left: 50px;
+    }
+
+    section {
+      grid-area: text;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    img {
+      grid-area: image;
+      padding-top: 1px;
+      z-index: 0;
+      height: 99%;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain; // optional, helps with fit inside container
+      display: block;
+      margin: 0 0 0 0;
+    }
+  }
+}
+
+
+.image-container-mirrored {
+  @extend .image-container;
+
+  @include responsive($large_screen) {
+    grid-template-areas: "image text";
+
+    &::before {
+      clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 35% 100%);
+    }
+  }
+}
+
+#gallery-door{
+  cursor: pointer;
+}

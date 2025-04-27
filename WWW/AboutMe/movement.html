@@ -4,7 +4,10 @@
         <meta charset="UTF-8">
         <title>Projects</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="styles/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
     </head>
     <body>
         <nav id="topnav">
@@ -12,17 +15,25 @@
             <a href="projects.html">PROJECTS</a>
             <a href="hobbies.html">INTERESTS</a>
         </nav>
-        
-        <main>
 
-            <h1>Linux System Info</h1>
+        <button class="hamburger" id="hamburger">&#9776;</button>
+        <nav class="side-menu" id="sideMenu">
+            <a href="index.html">ABOUT ME</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="hobbies.html">INTERESTS</a>
+        </nav>
 
-            <img src="images/Movement.png" alt="App Photo">
+        <div class="page-content" id="page-content">
+            <main class="content">
 
-            <p>The package itself is designed to be modular. Below is a script responsible for handling moving the
-            character through 3D space on uneven surfaces</p>
+                <h1>3D Player Controller</h1>
 
-                  <pre class="myCode">
+                <img src="images/Movement.png" alt="App Photo">
+
+                <p>The package itself is designed to be modular. Below is a script responsible for handling moving the
+                    character through 3D space on uneven surfaces</p>
+
+                <pre><code class="language-csharp">
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(InputHandler))]
@@ -139,13 +150,14 @@ public class MovementController : MonoBehaviour
       _rb.linearVelocity = clampedVelocity;
    }
 }
-                </pre>
-        </main>
+                </code></pre>
+            </main>
+        </div>
 
         <footer>
             <p><b>Contact me: </b> m.korzeniewski2004@gmail.com <br>
                 <b>GitHub: </b> <a href="https://github.com/MichKorz/" target="_blank">MichKorz@GitHub</a> <br> &copy;2025 My Portfolio</p>
         </footer>
-
+        <script src="scripts/menu.js"></script>
     </body>
 </html>

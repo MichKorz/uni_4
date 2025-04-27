@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <title>Hobbies</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="styles/style.css">
     </head>
     <body>
         <nav id="topnav">
@@ -12,73 +12,91 @@
             <a href="projects.html">PROJECTS</a>
             <a href="hobbies.html">INTERESTS</a>
         </nav>
-        
-        <main>
 
-            <h1>Interests</h1>
+        <button class="hamburger" id="hamburger">&#9776;</button>
+        <nav class="side-menu" id="sideMenu">
+            <a href="index.html">ABOUT ME</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="hobbies.html">INTERESTS</a>
+        </nav>
 
-            <div class="image-container">
-                <section>
-                    <h2>Making games</h2>
-                    <p>In my spare time I love creating small games. I use Unity Engine as it allows both 3D and 2D.
-                        I took part in many 48 hour game jams (time limited game making competitions), and currently
-                        I'm working on a big project with my friend.
-                    </p></section>
-                <picture>
-                    <source srcset="images/Unity.png" media="(min-width: 850px)">
-                    <img src="images/Unity_small.webp" alt="Pwr" loading="lazy">
-                </picture>
-            </div>
+        <div class="page-content" id="page-content">
+            <main class="content">
 
-            <hr>
+                <h1>Interests</h1>
 
-            <div class="image-container-mirrored">
-                <section>
-                    <h2>3D art</h2>
-                    <p>In the past I spent a lot of time in Blender. I made mostly fluid simulations and wallpapers,
-                        but I also did a bit of interior design. Currently, I'm using blender mostly while making
-                        games as a tool for small adjustments to models, textures and animations.
-                    </p></section>
-                <picture>
-                    <source srcset="images/Explosion.png" media="(min-width: 850px)">
-                    <img src="images/Explosion_small.webp" alt="Pwr" loading="lazy">
-                </picture>
-            </div>
+                <div class="image-container">
+                    <section>
+                        <h2>Making games</h2>
+                        <p>In my spare time I love creating small games. I use Unity Engine as it allows both 3D and 2D.
+                            I took part in many 48 hour game jams (time limited game making competitions), and currently
+                            I'm working on a big project with my friend.
+                        </p></section>
+                    <picture>
+                        <source srcset="images/Unity.png" media="(min-width: 850px)">
+                        <img src="images/Unity_small.webp" alt="Pwr" loading="lazy">
+                    </picture>
+                </div>
 
-            <hr>
+                <hr>
 
-            <div class="image-container">
-                <section>
-                    <h2>Skiing</h2>
-                    <p>When winter comes I love to go skiing.
-                    </p></section>
-                <picture>
-                    <source srcset="images/Skiing.jpg" media="(min-width: 850px)">
-                    <img src="images/Skiing_small.webp" alt="Pwr" loading="lazy">
-                </picture>
-            </div>
+                <div class="image-container-mirrored" id="gallery-door">
+                    <section>
+                        <h2>3D art</h2>
+                        <p>In the past I spent a lot of time in Blender. I made mostly fluid simulations and wallpapers,
+                            but I also did a bit of interior design. Currently, I'm using blender mostly while making
+                            games as a tool for small adjustments to models, textures and animations.
+                        </p></section>
+                    <picture>
+                        <source srcset="images/Explosion.png" media="(min-width: 850px)">
+                        <img src="images/Explosion_small.webp" alt="Pwr" loading="lazy">
+                    </picture>
+                </div>
 
-            <hr>
+                <div class="image_gallery" id="image_gallery">
+                    <img src="images/Explosion.png" alt="Image 1" />
+                    <img src="images/Explosion.png" alt="Image 2" />
+                    <img src="images/Explosion.png" alt="Image 3" />
+                    <img src="images/Explosion.png" alt="Image 4" />
+                    <img src="images/Explosion.png" alt="Image 5" />
+                    <img src="images/Explosion.png" alt="Image 6" />
+                </div>
 
-            <div class="image-container-mirrored">
-                <section>
-                    <h2>Engineering and 3D Printing</h2>
-                    <p>Since I can remember I was interested in creating stuff.
-                    </p></section>
-                <picture>
-                    <source srcset="images/Turbine.png" media="(min-width: 850px)">
-                    <img src="images/Turbine_small.webp" alt="Pwr" loading="lazy">
-                </picture>
-            </div>
+                <hr>
 
-            <hr>
+                <div class="image-container">
+                    <section>
+                        <h2>Skiing</h2>
+                        <p>When winter comes I love to go skiing.
+                        </p></section>
+                    <picture>
+                        <source srcset="images/Skiing.jpg" media="(min-width: 850px)">
+                        <img src="images/Skiing_small.webp" alt="Pwr" loading="lazy">
+                    </picture>
+                </div>
 
-        </main>
+                <hr>
+
+                <div class="image-container-mirrored">
+                    <section>
+                        <h2>Engineering and 3D Printing</h2>
+                        <p>Since I can remember I was interested in creating stuff.
+                        </p></section>
+                    <picture>
+                        <source srcset="images/Turbine.png" media="(min-width: 850px)">
+                        <img src="images/Turbine_small.webp" alt="Pwr" loading="lazy">
+                    </picture>
+                </div>
+
+                <hr>
+
+            </main>
+        </div>
 
         <footer>
             <p><b>Contact me: </b> m.korzeniewski2004@gmail.com <br>
                 <b>GitHub: </b> <a href="https://github.com/MichKorz/" target="_blank">MichKorz@GitHub</a> <br> &copy;2025 My Portfolio</p>
         </footer>
-
+        <script src="scripts/menu.js"></script>
     </body>
 </html>

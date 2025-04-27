@@ -4,80 +4,91 @@
         <meta charset="UTF-8">
         <title>Projects</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="styles/style.css">
     </head>
+
     <body>
         <nav id="topnav">
             <a href="index.html">ABOUT ME</a>
             <a href="projects.html">PROJECTS</a>
             <a href="hobbies.html">INTERESTS</a>
         </nav>
-        
-        <main>
 
-            <h1>Projects</h1>
+        <button class="hamburger" id="hamburger">&#9776;</button>
+        <nav class="side-menu" id="sideMenu">
+            <a href="index.html">ABOUT ME</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="hobbies.html">INTERESTS</a>
+        </nav>
 
-            <div class="image-container">
-                <section>
-                    <h2>Dense Neural Network Creator</h2>
-                    <p> When learning about neural networks, I created a tool in bare python for creating, training
-                        and testing dense neural networks. Later I added GUI made in Java <a href="Neural.html">Read more</a> </p>
-                </section>
-                <img src="images/Network_GUI.png" alt="Chinese Checkers Photo">
-            </div>
+        <div class="page-content" id="page-content">
+            <main class="content">
 
-            <hr>
+                <h1>Projects</h1>
 
-            <div class="image-container-mirrored">
-                <section>
-                    <h2>Chinese Checkers</h2>
-                    <p> This project is a multiplayer game written in Java called Chinese Checkers,
-                        which supports up to six players/bots. It uses sockets for real-time communication
-                        and includes a MySQL database that allows players to save and load games
-                        seamlessly. The game provides an engaging and interactive experience while
-                        ensuring smooth connectivity and persistence. <a href="checkers.html">Read more</a> </p>
-                </section>
-                <img src="images/checkers.jpg" alt="Chinese Checkers Photo">
-            </div>
+                <div class="image-container">
+                    <section>
+                        <h2>Dense Neural Network Creator</h2>
+                        <p> When learning about neural networks, I created a tool in bare python for creating, training
+                            and testing dense neural networks. Later I added GUI made in Java <a href="Neural.html">Read
+                                more</a></p>
+                    </section>
+                    <img src="images/Network_GUI.png" alt="Chinese Checkers Photo">
+                </div>
 
-            <hr>
+                <hr>
 
-            <div class="image-container">
-                <section>
-                    <h2>3D Player Controller</h2>
-                    <p> This is a player movement controller package I use as a drop in for prototypes and games.
-                        It supports input from keyboard as well as controller, walking on slopes, stairs,
-                        crouching and sprinting.<a href="movement.html">Read more</a> </p>
-                </section>
-                <img src="images/Movement.png" alt="OS Info Photo">
-            </div>
+                <div class="image-container-mirrored">
+                    <section>
+                        <h2>Chinese Checkers</h2>
+                        <p> This project is a multiplayer game written in Java called Chinese Checkers,
+                            which supports up to six players/bots. It uses sockets for real-time communication
+                            and includes a MySQL database that allows players to save and load games
+                            seamlessly. The game provides an engaging and interactive experience while
+                            ensuring smooth connectivity and persistence. <a href="checkers.html">Read more</a></p>
+                    </section>
+                    <img src="images/checkers.jpg" alt="Chinese Checkers Photo">
+                </div>
 
-            <hr>
+                <hr>
 
-            <hr>
+                <div class="image-container">
+                    <section>
+                        <h2>3D Player Controller</h2>
+                        <p> This is a player movement controller package I use as a drop in for prototypes and games.
+                            It supports input from keyboard as well as controller, walking on slopes, stairs,
+                            crouching and sprinting.<a href="movement.html">Read more</a></p>
+                    </section>
+                    <img src="images/Movement.png" alt="OS Info Photo">
+                </div>
 
-            <div class="image-container-mirrored">
-                <section>
-                    <h2>48hrs Game Jam Game</h2>
-                    <p> A game I made with my friend during a 48hrs game jam. It runs on browser, you can try it
-                        <a href="https://benalnezrok.itch.io/hostile-facility" target="_blank">here.</a>
-                    </p>
-                </section>
-                <picture>
-                    <source srcset="images/Game.png" media="(min-width: 850px)">
-                    <img src="images/Game_small.webp" alt="Pwr" loading="lazy">
-                </picture>
-            </div>
+                <hr>
 
-            <hr>
+                <hr>
 
-        </main>
+                <div class="image-container-mirrored">
+                    <section>
+                        <h2>48hrs Game Jam Game</h2>
+                        <p> A game I made with my friend during a 48hrs game jam. It runs on browser, you can try it
+                            <a href="https://benalnezrok.itch.io/hostile-facility" target="_blank">here.</a>
+                        </p>
+                    </section>
+                    <picture>
+                        <source srcset="images/Game.png" media="(min-width: 850px)">
+                        <img src="images/Game_small.webp" alt="Pwr" loading="lazy">
+                    </picture>
+                </div>
+
+                <hr>
+
+            </main>
+        </div>
 
         <footer>
             <p>
                 <b>Contact me: </b> m.korzeniewski2004@gmail.com <br>
                 <b>GitHub: </b> <a href="https://github.com/MichKorz/" target="_blank">MichKorz@GitHub</a> <br> &copy;2025 My Portfolio</p>
         </footer>
-        
+        <script src="scripts/menu.js"></script>
     </body>
 </html>

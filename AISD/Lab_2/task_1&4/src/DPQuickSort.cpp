@@ -77,19 +77,21 @@ int main() {
 
     for (int i = 0; i < n; i++) {
         cin >> arr[i];
+        cout << arr[i];
     }
+    cout << endl;
 
     dualPivotQuickSort(arr, 0, n - 1);
 
     // Output sorted array
-    /*for (int num : arr) {
+    for (int num : arr) {
         cout << num << " ";
     }
-    cout << endl;*/
+    cout << endl;
 
     // Output counts
-    cout << comparisons << endl;
-    cout << swaps << endl;
+    cout << "Comparisons: " <<comparisons << endl;
+    cout << "Swaps: " << swaps << endl;
 
     return 0;
 }

@@ -47,14 +47,17 @@ int main()
     for (int i = 0; i < n; i++)
     {
         cin >> arr[i];
+        cout << arr[i];
     }
+    cout << endl;
 
     int comparisons = 0, swaps = 0;
     insertionSort(arr, n, comparisons, swaps);
-    //printArray(arr, n);
+    printArray(arr, n);
+    cout << endl;
 
-    cout << comparisons << endl;
-    cout << swaps << endl;
+    cout << "Comparisons: " <<comparisons << endl;
+    cout << "Swaps: " << swaps << endl;
 
     return 0;
 }

@@ -1,0 +1,22 @@
+.content{
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto;
+  width: calc(98vw - $menu_width);
+  max-width: 1200px;
+}
+
+@include responsive($large_screen)
+{
+  .content
+  {
+    grid-template-columns: 1fr 1fr;
+  }
+  hr
+  {
+    grid-column: span 2; /* Ensures it spans across both columns */
+  }
+}

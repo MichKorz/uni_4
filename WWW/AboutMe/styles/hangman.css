@@ -1,0 +1,89 @@
+/* --- reset minimalny --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+#game {
+    max-width: 600px;
+    margin: auto;
+}
+
+canvas {
+    background: white;
+    border: 1px solid #333;
+    width: 100%;       /* responsywny */
+    height: auto;      /* proporcjonalny */
+    max-width: 300px;  /* ograniczenie na duże ekrany */
+    margin-bottom: 20px;
+}
+
+#word {
+    margin: 20px;
+    font-size: 2em;
+    letter-spacing: 0.5em;
+    word-break: break-all;
+}
+
+#letters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 10px;
+}
+
+.letter {
+    flex: 0 0 10%;       /* maks 10% szerokości rzędu */
+    min-width: 30px;
+    padding: 12px 0;
+    background-color: #ddd;
+    border-radius: 5px;
+    font-size: 1.2em;
+    user-select: none;
+    touch-action: manipulation; /* lepsze wsparcie dotykowe */
+    cursor: pointer;
+}
+
+.letter.clicked {
+    background-color: #3498db;
+    color: white;
+    pointer-events: none;
+}
+
+#controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#controls button {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background: #444;
+    color: white;
+    cursor: pointer;
+}
+
+#controls button:active {
+    transform: scale(0.98);
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
