@@ -76,17 +76,52 @@ footer {
 
 .image_gallery {
     display: none;
-    position: absolute;
-    grid-template-columns: repeat(auto-fill, minmax(calc(80vw / 3), 1fr));
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* center itself */
+    grid-template-columns: repeat(auto-fill, minmax(calc(calc(100vw - 420px) / 3), 1fr));
+    width: calc(100vw - 400px);
+    max-height: 90vh; /* Optional: limit max height if many images */
+    padding: 20px; /* Inner padding instead of border */
+    background: radial-gradient(circle at top right, $c_gradient_2, $c_gradient_1);
+    border-radius: 20px; /* Fully rounded corners */
+    overflow: hidden; /* Clip any overflow */
+    align-items: center;
+    justify-content: center;
     gap: 10px;
     z-index: 90;
 
-    img{
+    img {
         width: 100%;
         height: auto;
         object-fit: cover;
-        border-radius: 4px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        border-radius: 10px; /* Slightly more rounding for images */
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .close_button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 100; /* Make sure it stays on top */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+
+        &:hover {
+            background: rgba(0,0,0,0.8);
+        }
     }
 }
 

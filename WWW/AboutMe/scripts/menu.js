@@ -1,23 +1,13 @@
-const hamburger = document.getElementById("hamburger");
-const topnav = document.getElementById("topnav");
-const sideMenu = document.getElementById("sideMenu");
-const pageContent = document.getElementById("page-content");
-
-hamburger.addEventListener("click", () => {
-    sideMenu.classList.toggle("open");
-    pageContent.classList.toggle("moved");
-    hamburger.classList.toggle("open");
-});
-
-// When JS is running:
-document.addEventListener("DOMContentLoaded", () => {
-    hamburger.style.display = "inline-block"; // Show hamburger
-    topnav.style.display = "none"; // Hide classic topnav
-});
-
+/*jslint browser */
+/*global window, document */
 
 (function () {
     "use strict";
+
+    var hamburger = document.getElementById("hamburger");
+    var topnav = document.getElementById("topnav");
+    var sideMenu = document.getElementById("sideMenu");
+    var pageContent = document.getElementById("page-content");
 
     function preloadImages(imageElements) {
         var promises = [];
@@ -42,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showGallery() {
-        var gallery = document.getElementById("image_gallery"),
-            images = Array.prototype.slice.call(gallery.getElementsByTagName("img"));
+        var gallery = document.getElementById("image_gallery");
+        var images = Array.prototype.slice.call(gallery.getElementsByTagName("img"));
 
         preloadImages(images).then(function () {
             gallery.style.display = "grid";
@@ -52,11 +42,26 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    hamburger.addEventListener("click", function () {
+        sideMenu.classList.toggle("open");
+        pageContent.classList.toggle("moved");
+        hamburger.classList.toggle("open");
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        hamburger.style.display = "inline-block"; // Show hamburger
+        topnav.style.display = "none"; // Hide classic topnav
+    });
+
     window.addEventListener("load", function () {
         var galleryButton = document.getElementById("gallery-door");
 
         galleryButton.addEventListener("click", function () {
             showGallery();
+        });
+
+        document.getElementById("close_gallery").addEventListener("click", function () {
+            document.getElementById("image_gallery").style.display = "none";
         });
     });
 }());
