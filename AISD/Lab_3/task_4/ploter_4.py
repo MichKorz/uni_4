@@ -12,13 +12,13 @@ RNGs_path = "../RNGs/"
 sorting_algorithms = [
     "b_search"
 ]
-sorting_algorithms_path = "../task_1/"
+sorting_algorithms_path = "../task_4/"
 
 # Ensure the plots directory exists
 os.makedirs("./plots", exist_ok=True)
 
 # Simple loop to set variable k to 1, 10, and 100
-for k in [50]:
+for k in [1]:
 
     # Loop over each RNG
     for rng in RNGs:
@@ -30,7 +30,7 @@ for k in [50]:
         for n in range(1000, 50001, 1000):
             
             # Create the path for the RNG command to run
-            rng_command = [RNGs_path + rng, str(n), str(1), str(5)]
+            rng_command = [RNGs_path + rng, str(n), str(n/2), str(5)]
             
             # Initialize the accumulators for comparisons and swaps for each sorting algorithm
             comparisons = {algo: 0 for algo in sorting_algorithms}
