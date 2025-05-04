@@ -7,6 +7,26 @@ std::mt19937 gen(rd());               // Mersenne Twister engine
 long long comps = 0;
 long long swaps = 0;
 
+void insertionSort(int *arr, int n)
+{
+    for (int i = 1; i < n; ++i) 
+    {
+        int key = arr[i];
+        int j = i - 1;
+
+        ++comps;
+        while (j >= 0 && arr[j] > key) 
+        {
+            ++comps;
+            ++swaps;
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        ++swaps;
+        arr[j + 1] = key;
+    }
+}
+
 long long partiton(int *A, long long p, long long r)
 {
     int x = A[r];
@@ -68,12 +88,28 @@ int main()
 
     int A[n];
 
-    for (int j = 0; j < n; j++)
-    {
+    for (long long j = 0; j < n; j++) 
+    { 
         std::cin >> A[j];
+        std::cout << A[j] << " ";
     }
+    std::cout << std::endl;
 
-    int x = randomized_select(A, 0, n - 1, i);
-    std::cout << comps << std::endl;
-    std::cout << swaps << std::endl;
+    int result = randomized_select(A, 0, n - 1, i); 
+
+    for (long long j = 0; j < n; j++) 
+    { 
+        std::cout << A[j] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "statystyka: " << result << std::endl;
+
+    insertionSort(A, n);
+
+    for (long long j = 0; j < n; j++) 
+    { 
+        std::cout << A[j] << " ";
+    }
+    std::cout << std::endl;
 }

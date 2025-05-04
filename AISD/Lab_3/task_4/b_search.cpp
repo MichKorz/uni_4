@@ -18,9 +18,24 @@ bool binary_search(int *A, long long p, long long r, int x)
 
 int main()
 {
-    int test_data[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int n;
+    std::cin >> n;
 
-    bool exists = binary_search(test_data, 0, 9, 4);
+    int i;
+    std::cin >> i;
 
-    std::cout<< exists << std::endl;
+    int m;
+    std::cin >> m;
+
+    int A[n];
+
+    for (int j = 0; j < n; j++)
+    {
+        std::cin >> A[j];
+    }
+
+    bool exists = binary_search(A, 0, n - 1, i);
+
+    std::cout << comps << std::endl;
+    std::cout << comps << std::endl;
 }
