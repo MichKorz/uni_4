@@ -42,14 +42,14 @@ canvas {
 }
 
 .letter {
-    flex: 0 0 10%;       /* maks 10% szerokości rzędu */
+    flex: 0 0 10%;
     min-width: 30px;
     padding: 12px 0;
     background-color: #ddd;
     border-radius: 5px;
     font-size: 1.2em;
     user-select: none;
-    touch-action: manipulation; /* lepsze wsparcie dotykowe */
+    touch-action: manipulation;
     cursor: pointer;
 }
 

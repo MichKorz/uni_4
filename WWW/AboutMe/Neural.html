@@ -5,7 +5,10 @@
         <title>Projects</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                hljs.highlightAll();
+            });</script>
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="stylesheet" href="styles/style.css">
     </head>
@@ -34,7 +37,7 @@
                     parameters provided by the user.
                 </p>
 
-                <pre><code class="language-python">
+                <pre><code class="language-python" data-highlighted="yes">
 from Network import Network
 from Coach import Coach
 from DataLoader import DataLoader
