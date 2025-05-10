@@ -23,6 +23,8 @@ const (
 
 	WildTravelerSpawnDelay = 50 * time.Millisecond
 	WildTravelerLifeTime   = 300 * time.Millisecond
+
+	DecayTime = 80 * time.Millisecond
 )
 
 type Message struct {
@@ -43,6 +45,7 @@ type Tile struct {
 	ch             chan Message
 	waitQueue      []chan int
 	wildTravelerCh chan int
+	trapChannel    chan int
 }
 
 func tileRoutine(ch chan Message) {
@@ -64,9 +67,11 @@ func tileRoutine(ch chan Message) {
 			}
 			tile.waitQueue = nil
 			tile.wildTravelerCh = nil
+			if tile.trapChannel != nil {
+				tile.status = 5
+			}
 
 		case 1:
-			// Respond based on tile status
 			if tile.status == 0 {
 				tile.status = 1
 				req.responseChannel <- 11
@@ -75,6 +80,11 @@ func tileRoutine(ch chan Message) {
 			} else if tile.status == 2 {
 				tile.waitQueue = append(tile.waitQueue, req.responseChannel)
 				tile.wildTravelerCh <- 30
+			} else if tile.status == 5 {
+				req.responseChannel <- 41
+				tile.status = 6
+			} else if tile.status == 6 {
+				tile.waitQueue = append(tile.waitQueue, req.responseChannel)
 			}
 
 		case 2:
@@ -82,6 +92,9 @@ func tileRoutine(ch chan Message) {
 				tile.status = 2
 				tile.wildTravelerCh = req.responseChannel
 				req.responseChannel <- 11
+			} else if tile.status == 5 {
+				req.responseChannel <- 41
+				tile.status = 6
 			} else {
 				req.responseChannel <- 13
 			}
@@ -102,6 +115,14 @@ func tileRoutine(ch chan Message) {
 			} else {
 				req.responseChannel <- 13
 			}
+		case 40:
+			tile.trapChannel = req.additionalChannel
+			tile.status = 5
+		case 8:
+			tile.trapChannel <- 8
+			tile.status = 5
+		case 9:
+			tile.trapChannel <- 9
 
 		default:
 			// Echo back received message type
@@ -198,6 +219,16 @@ mainLoop:
 				case 14:
 					i--
 					continue mainLoop
+				case 41:
+					t.Pos = candidate
+					t.Symbol = rune(t.Symbol + 32)
+					t.storeTrace(startTime)
+					msg := createMessage(0, response)
+					channels[oldPos.Y][oldPos.X] <- msg
+					time.Sleep(DecayTime)
+					msg = createMessage(8, response)
+					channels[t.Pos.Y][t.Pos.X] <- msg
+					return
 				}
 			case <-time.After(LockWait):
 				t.Symbol = rune(t.Symbol + 32) // Convert to lowercase (e.g., 'A' -> 'a')
@@ -254,6 +285,16 @@ wildLoop:
 							continue wildLoop
 						} else if resp == 13 {
 							continue
+						} else if resp == 41 {
+							msg := createMessage(0, response)
+							channels[t.Pos.Y][t.Pos.X] <- msg
+							t.Pos = Position{X: newX, Y: newY}
+							t.Symbol = 47
+							t.storeTrace(startTime)
+							time.Sleep(DecayTime)
+							msg = createMessage(8, response)
+							channels[t.Pos.Y][t.Pos.X] <- msg
+							return
 						}
 					case <-time.After(LockWait):
 						// Ignore timeouts or stray messages (like type 30)
@@ -288,6 +329,25 @@ func printerRoutine(reportCh <-chan []Trace, done chan<- struct{}) {
 	done <- struct{}{}
 }
 
+func trapRoutine(t *Traveler, startTime time.Time, reportCh chan<- []Trace, response chan int) {
+	t.storeTrace(startTime)
+	// Wait for messages from the response channel
+	for {
+		select {
+		case msg := <-response:
+			switch msg {
+			case 8:
+				// Store the trace when response is 8
+				t.storeTrace(startTime)
+			case 9:
+				// Report the traces and return when response is 9
+				reportCh <- t.Traces
+				return
+			}
+		}
+	}
+}
+
 // Global 2D channel grid
 var channels [][]chan Message
 
@@ -304,16 +364,55 @@ func main() {
 	}
 
 	startTime := time.Now()
-
-	fmt.Printf("-1 %d %d %d\n", NrOfTravelers+50, BoardWidth, BoardHeight)
-
 	reportCh := make(chan []Trace, NrOfTravelers)
 	done := make(chan struct{})
+	go printerRoutine(reportCh, done)
+
+	// Generate 10 distinct random points on the board
+	points := make(map[Position]struct{})
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	for len(points) < 10 {
+		p := Position{
+			X: rng.Intn(BoardWidth),
+			Y: rng.Intn(BoardHeight),
+		}
+		points[p] = struct{}{} // Only adds if the point doesn't already exist
+	}
+
+	symbol := '#'
+	id := NrOfTravelers
+	trapChannels := make([]chan int, 0, 10)
+
+	for p := range points {
+		pos := Position{X: p.X, Y: p.Y}
+		trapChannel := make(chan int)
+		trapChannels = append(trapChannels, trapChannel) // Store for later
+
+		msg := Message{
+			messageType:       40,
+			responseChannel:   nil,
+			additionalChannel: trapChannel,
+		}
+		channels[pos.Y][pos.X] <- msg
+
+		t := &Traveler{
+			Id:      id,
+			Symbol:  symbol,
+			Traces:  make([]Trace, 0, MaxSteps+1),
+			RandGen: nil,
+			Pos:     pos,
+		}
+		id++
+		go trapRoutine(t, startTime, reportCh, trapChannel)
+	}
+
+	fmt.Printf("-1 %d %d %d\n", NrOfTravelers+50, BoardWidth, BoardHeight)
 
 	var wg sync.WaitGroup
 	wg.Add(NrOfTravelers)
 
-	symbol := 'A'
+	symbol = 'A'
 	for i := 0; i < NrOfTravelers; i++ {
 		seed := time.Now().UnixNano() + int64(i)
 		rng := rand.New(rand.NewSource(seed))
@@ -349,8 +448,6 @@ func main() {
 		symbol++
 	}
 
-	go printerRoutine(reportCh, done)
-
 	// Create channel to signal when WaitGroup is done
 	doneWg := make(chan struct{})
 
@@ -363,12 +460,17 @@ func main() {
 	defer ticker.Stop()
 
 	symbol = 48
-	id := NrOfTravelers
+	id = NrOfTravelers + 10
 wildTravelerSpwanLoop:
 	for {
 		select {
 		case <-doneWg:
 			time.Sleep(WildTravelerLifeTime)
+			for _, ch := range trapChannels {
+				ch <- 9
+			}
+
+			time.Sleep(WildTravelerLifeTime * 5)
 			reportCh <- []Trace{
 				{
 					Id: -1,
