@@ -63,13 +63,16 @@ func tileRoutine(ch chan Message) {
 		case 0:
 			tile.status = 0
 			for _, ch := range tile.waitQueue {
-				ch <- 12
-			}
+    			select {
+    				case ch <- 12: // Or appropriate message
+        			// Message sent successfully
+			    default:
+				// Traveler likely timed out and is no longer listening.
+				// This prevents the tileRoutine from blocking.
+			    }
+			}	
 			tile.waitQueue = nil
 			tile.wildTravelerCh = nil
-			if tile.trapChannel != nil {
-				tile.status = 5
-			}
 
 		case 1:
 			if tile.status == 0 {
@@ -121,6 +124,11 @@ func tileRoutine(ch chan Message) {
 		case 8:
 			tile.trapChannel <- 8
 			tile.status = 5
+			for _, ch := range tile.waitQueue {
+				ch <- 12
+			}
+			tile.waitQueue = nil
+			tile.wildTravelerCh = nil
 		case 9:
 			tile.trapChannel <- 9
 
@@ -223,6 +231,7 @@ mainLoop:
 					t.Pos = candidate
 					t.Symbol = rune(t.Symbol + 32)
 					t.storeTrace(startTime)
+					reportCh <- t.Traces
 					msg := createMessage(0, response)
 					channels[oldPos.Y][oldPos.X] <- msg
 					time.Sleep(DecayTime)
@@ -291,6 +300,7 @@ wildLoop:
 							t.Pos = Position{X: newX, Y: newY}
 							t.Symbol = 47
 							t.storeTrace(startTime)
+							reportCh <- t.Traces
 							time.Sleep(DecayTime)
 							msg = createMessage(8, response)
 							channels[t.Pos.Y][t.Pos.X] <- msg
