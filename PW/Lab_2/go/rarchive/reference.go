@@ -14,9 +14,9 @@ const (
 	MinSteps      = 10
 	MaxSteps      = 100
 
-	MinDelay  = 10 * time.Millisecond
-	MaxDelay  = 50 * time.Millisecond
-	LockWait  = 100 * time.Millisecond // Timeout before giving up on a move
+	MinDelay = 10 * time.Millisecond
+	MaxDelay = 50 * time.Millisecond
+	LockWait = 100 * time.Millisecond // Timeout before giving up on a move
 
 	BoardWidth  = 15
 	BoardHeight = 15
@@ -110,10 +110,10 @@ func travelerRoutine(t *Traveler, startTime time.Time, reportCh chan<- []Trace, 
 			t.Pos = candidate
 			t.storeTrace(startTime)
 		case <-time.After(LockWait): // Timeout occurred, traveler "gives up"
-		    t.Symbol = rune(t.Symbol + 32) // Convert to lowercase (e.g., 'A' -> 'a')
-		    t.storeTrace(startTime)        // Store this final state with the updated symbol
-		    reportCh <- t.Traces           // Send trace as if it finished
-		    return                         // Exit routine early
+			t.Symbol = rune(t.Symbol + 32) // Convert to lowercase (e.g., 'A' -> 'a')
+			t.storeTrace(startTime)        // Store this final state with the updated symbol
+			reportCh <- t.Traces           // Send trace as if it finished
+			return                         // Exit routine early
 		}
 	}
 
@@ -167,4 +167,3 @@ func main() {
 	close(reportCh)
 	<-done
 }
-
