@@ -20,19 +20,20 @@ const (
 
 	BoardWidth  = 15
 	BoardHeight = 10
+
+	WildTravelerSpawnDelay = 10 * time.Millisecond
+	WildTravelerLifeTime   = 50 * time.Microsecond
 )
 
 type Message struct {
 	messageType     int
 	responseChannel chan int
-	payload         int
 }
 
-func createMessage(msgType int, responseChannel chan int, payload int) Message {
+func createMessage(msgType int, responseChannel chan int) Message {
 	return Message{
 		messageType:     msgType,
 		responseChannel: responseChannel,
-		payload:         payload,
 	}
 }
 
@@ -62,15 +63,31 @@ func tileRoutine(ch chan Message) {
 		case 1:
 			// Respond based on tile status
 			if tile.status == 0 {
-				tile.status = req.payload
+				tile.status = 1
 				req.responseChannel <- 11
 			} else if tile.status == 1 {
 				tile.waitQueue = append(tile.waitQueue, req.responseChannel)
 			}
 
+		case 2:
+			if tile.status == 0 {
+				tile.status = 2
+				req.responseChannel <- 11
+			} else {
+				req.responseChannel <- 13
+			}
+
 		case 20:
 			if tile.status == 0 {
-				tile.status = req.payload
+				tile.status = 1
+				req.responseChannel <- 11
+			} else {
+				req.responseChannel <- 13
+			}
+
+		case 21:
+			if tile.status == 0 {
+				tile.status = 2
 				req.responseChannel <- 11
 			} else {
 				req.responseChannel <- 13
@@ -154,7 +171,7 @@ mainLoop:
 
 	sendMessage:
 		for {
-			msg := createMessage(1, response, 1)
+			msg := createMessage(1, response)
 			channels[candidate.Y][candidate.X] <- msg
 
 			select {
@@ -163,7 +180,7 @@ mainLoop:
 				case 11:
 					t.Pos = candidate
 					t.storeTrace(startTime)
-					msg := createMessage(0, response, 1)
+					msg := createMessage(0, response)
 					channels[oldPos.Y][oldPos.X] <- msg
 					break sendMessage
 				case 12:
@@ -185,10 +202,72 @@ mainLoop:
 	reportCh <- t.Traces
 }
 
+func wildTravelerRoutine(t *Traveler, startTime time.Time, reportCh chan<- []Trace) {
+	t.storeTrace(startTime)
+
+	response := make(chan int)
+
+	lifeTimer := time.After(WildTravelerLifeTime)
+wildLoop:
+	for {
+		select {
+		case <-lifeTimer:
+			// Wild traveler expired
+			t.Symbol = '.'
+			t.storeTrace(startTime)
+			reportCh <- t.Traces
+			msg := createMessage(0, response)
+			channels[t.Pos.Y][t.Pos.X] <- msg
+			return
+
+		case msg := <-response:
+			if msg == 30 {
+				directions := []Position{
+					{X: 0, Y: -1}, // Up
+					{X: 0, Y: 1},  // Down
+					{X: -1, Y: 0}, // Left
+					{X: 1, Y: 0},  // Right
+				}
+
+				for _, d := range directions {
+					newX := (t.Pos.X + d.X + BoardWidth) % BoardWidth
+					newY := (t.Pos.Y + d.Y + BoardHeight) % BoardHeight
+
+					msg := createMessage(2, response)
+					channels[newY][newX] <- msg
+
+					select {
+					case resp := <-response:
+						if resp == 11 {
+							msg := createMessage(0, response)
+							channels[t.Pos.Y][t.Pos.X] <- msg
+							t.Pos = Position{X: newX, Y: newY}
+							t.storeTrace(startTime)
+							continue wildLoop
+						} else if resp == 13 {
+							continue
+						}
+					case <-time.After(LockWait):
+						// Ignore timeouts or stray messages (like type 30)
+						continue
+					}
+				}
+
+				// All directions failed
+				msg := createMessage(14, response)
+				channels[t.Pos.Y][t.Pos.X] <- msg
+			}
+		}
+	}
+}
+
 // printerRoutine collects and prints reports
 func printerRoutine(reportCh <-chan []Trace, done chan<- struct{}) {
-	for i := 0; i < NrOfTravelers; i++ {
+	for {
 		traces := <-reportCh
+		if len(traces) == 1 && traces[0].Id == -1 {
+			break
+		}
 		for _, trace := range traces {
 			fmt.Printf("%.6f %d %d %d %c\n",
 				trace.TimeStamp.Seconds(),
@@ -239,11 +318,7 @@ func main() {
 			}
 
 			respCh := make(chan int, 1)
-			msg := Message{
-				messageType:     20,
-				responseChannel: respCh,
-				payload:         1,
-			}
+			msg := createMessage(20, respCh)
 
 			channels[pos.Y][pos.X] <- msg
 
@@ -268,7 +343,69 @@ func main() {
 
 	go printerRoutine(reportCh, done)
 
-	wg.Wait()
+	// Create channel to signal when WaitGroup is done
+	doneWg := make(chan struct{})
+
+	go func() {
+		wg.Wait()
+		close(doneWg)
+	}()
+
+	ticker := time.NewTicker(WildTravelerSpawnDelay)
+	defer ticker.Stop()
+
+	symbol = '1'
+	id := 0
+wildTravelerSpwanLoop:
+	for {
+		select {
+		case <-doneWg:
+			time.Sleep(WildTravelerLifeTime)
+			reportCh <- []Trace{
+				{
+					Id: -1,
+				},
+			}
+			break wildTravelerSpwanLoop
+
+		case <-ticker.C:
+			seed := time.Now().UnixNano() + int64(id)
+			rng := rand.New(rand.NewSource(seed))
+
+			var pos Position
+			for {
+				pos = Position{
+					X: int(rng.Float64() * float64(BoardWidth)),
+					Y: int(rng.Float64() * float64(BoardHeight)),
+				}
+
+				respCh := make(chan int, 1)
+				msg := createMessage(21, respCh)
+
+				channels[pos.Y][pos.X] <- msg
+
+				resp := <-respCh
+				if resp == 11 {
+					break
+				}
+				if resp == 13 {
+					continue
+				}
+			}
+			t := &Traveler{
+				Id:      id,
+				Symbol:  symbol,
+				Traces:  make([]Trace, 0, MaxSteps+1),
+				RandGen: nil,
+				Pos:     pos,
+			}
+			go wildTravelerRoutine(t, startTime, reportCh)
+			symbol++
+			//symbol = symbol % 10
+			id++
+		}
+	}
+
 	close(reportCh)
 	<-done
 }
