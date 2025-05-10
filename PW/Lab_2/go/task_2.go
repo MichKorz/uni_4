@@ -19,10 +19,10 @@ const (
 	LockWait = 100 * time.Millisecond // Timeout before giving up on a move
 
 	BoardWidth  = 15
-	BoardHeight = 10
+	BoardHeight = 15
 
-	WildTravelerSpawnDelay = 10 * time.Millisecond
-	WildTravelerLifeTime   = 50 * time.Millisecond
+	WildTravelerSpawnDelay = 50 * time.Millisecond
+	WildTravelerLifeTime   = 300 * time.Millisecond
 )
 
 type Message struct {
@@ -213,7 +213,8 @@ wildLoop:
 		select {
 		case <-lifeTimer:
 			// Wild traveler expired
-			t.Symbol = '.'
+			//t.Symbol = '.'
+			//t.Pos = Position{BoardHeight, BoardWidth}
 			t.storeTrace(startTime)
 			reportCh <- t.Traces
 			msg := createMessage(0, response)
@@ -297,7 +298,7 @@ func main() {
 
 	startTime := time.Now()
 
-	fmt.Printf("-1 %d %d %d\n", NrOfTravelers, BoardWidth, BoardHeight)
+	fmt.Printf("-1 %d %d %d\n", NrOfTravelers + 50, BoardWidth, BoardHeight)
 
 	reportCh := make(chan []Trace, NrOfTravelers)
 	done := make(chan struct{})
@@ -355,7 +356,7 @@ func main() {
 	defer ticker.Stop()
 
 	symbol = 48
-	id := 0
+	id := NrOfTravelers
 wildTravelerSpwanLoop:
 	for {
 		select {
