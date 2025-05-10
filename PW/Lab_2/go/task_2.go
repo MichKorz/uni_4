@@ -18,8 +18,8 @@ const (
 	MaxDelay = 50 * time.Millisecond
 	LockWait = 100 * time.Millisecond // Timeout before giving up on a move
 
-	BoardWidth  = 5
-	BoardHeight = 2
+	BoardWidth  = 15
+	BoardHeight = 10
 )
 
 type Message struct {
@@ -206,7 +206,7 @@ var channels [][]chan Message
 
 func main() {
 	// Set up channel grid and tile goroutines
-	channels := make([][]chan Message, BoardHeight)
+	channels = make([][]chan Message, BoardHeight)
 	for i := range channels {
 		channels[i] = make([]chan Message, BoardWidth)
 		for j := range channels[i] {
