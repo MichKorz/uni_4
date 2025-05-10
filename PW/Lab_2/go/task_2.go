@@ -221,12 +221,11 @@ wildLoop:
 		select {
 		case <-lifeTimer:
 			// Wild traveler expired
-			//t.Symbol = '.'
-			//t.Pos = Position{BoardHeight, BoardWidth}
-			t.storeTrace(startTime)
-			reportCh <- t.Traces
 			msg := createMessage(0, response)
 			channels[t.Pos.Y][t.Pos.X] <- msg
+			t.Pos = Position{X: BoardWidth, Y: BoardHeight}
+			t.storeTrace(startTime)
+			reportCh <- t.Traces
 			return
 
 		case msg := <-response:
@@ -306,7 +305,7 @@ func main() {
 
 	startTime := time.Now()
 
-	fmt.Printf("-1 %d %d %d\n", NrOfTravelers + 50, BoardWidth, BoardHeight)
+	fmt.Printf("-1 %d %d %d\n", NrOfTravelers+50, BoardWidth, BoardHeight)
 
 	reportCh := make(chan []Trace, NrOfTravelers)
 	done := make(chan struct{})
