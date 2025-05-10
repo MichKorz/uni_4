@@ -22,7 +22,7 @@ const (
 	BoardHeight = 10
 
 	WildTravelerSpawnDelay = 10 * time.Millisecond
-	WildTravelerLifeTime   = 50 * time.Microsecond
+	WildTravelerLifeTime   = 50 * time.Millisecond
 )
 
 type Message struct {
@@ -354,7 +354,7 @@ func main() {
 	ticker := time.NewTicker(WildTravelerSpawnDelay)
 	defer ticker.Stop()
 
-	symbol = '1'
+	symbol = 48
 	id := 0
 wildTravelerSpwanLoop:
 	for {
@@ -401,7 +401,9 @@ wildTravelerSpwanLoop:
 			}
 			go wildTravelerRoutine(t, startTime, reportCh)
 			symbol++
-			//symbol = symbol % 10
+			if symbol == 58 {
+				symbol = 48
+			}
 			id++
 		}
 	}
