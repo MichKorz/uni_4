@@ -26,8 +26,9 @@ const (
 )
 
 type Message struct {
-	messageType     int
-	responseChannel chan int
+	messageType       int
+	responseChannel   chan int
+	additionalChannel chan int
 }
 
 func createMessage(msgType int, responseChannel chan int) Message {
@@ -38,16 +39,18 @@ func createMessage(msgType int, responseChannel chan int) Message {
 }
 
 type Tile struct {
-	status    int
-	ch        chan Message
-	waitQueue []chan int
+	status         int
+	ch             chan Message
+	waitQueue      []chan int
+	wildTravelerCh chan int
 }
 
 func tileRoutine(ch chan Message) {
 	tile := Tile{
-		status:    0,
-		ch:        ch,
-		waitQueue: make([]chan int, 0),
+		status:         0,
+		ch:             ch,
+		waitQueue:      make([]chan int, 0),
+		wildTravelerCh: nil,
 	}
 
 	for {
@@ -60,6 +63,8 @@ func tileRoutine(ch chan Message) {
 				ch <- 12
 			}
 			tile.waitQueue = nil
+			tile.wildTravelerCh = nil
+
 		case 1:
 			// Respond based on tile status
 			if tile.status == 0 {
@@ -67,11 +72,15 @@ func tileRoutine(ch chan Message) {
 				req.responseChannel <- 11
 			} else if tile.status == 1 {
 				tile.waitQueue = append(tile.waitQueue, req.responseChannel)
+			} else if tile.status == 2 {
+				tile.waitQueue = append(tile.waitQueue, req.responseChannel)
+				tile.wildTravelerCh <- 30
 			}
 
 		case 2:
 			if tile.status == 0 {
 				tile.status = 2
+				tile.wildTravelerCh = req.responseChannel
 				req.responseChannel <- 11
 			} else {
 				req.responseChannel <- 13
@@ -88,6 +97,7 @@ func tileRoutine(ch chan Message) {
 		case 21:
 			if tile.status == 0 {
 				tile.status = 2
+				tile.wildTravelerCh = req.additionalChannel
 				req.responseChannel <- 11
 			} else {
 				req.responseChannel <- 13
@@ -202,10 +212,8 @@ mainLoop:
 	reportCh <- t.Traces
 }
 
-func wildTravelerRoutine(t *Traveler, startTime time.Time, reportCh chan<- []Trace) {
+func wildTravelerRoutine(t *Traveler, startTime time.Time, reportCh chan<- []Trace, response chan int) {
 	t.storeTrace(startTime)
-
-	response := make(chan int)
 
 	lifeTimer := time.After(WildTravelerLifeTime)
 wildLoop:
@@ -373,6 +381,8 @@ wildTravelerSpwanLoop:
 			seed := time.Now().UnixNano() + int64(id)
 			rng := rand.New(rand.NewSource(seed))
 
+			wildTravelerRespCh := make(chan int)
+
 			var pos Position
 			for {
 				pos = Position{
@@ -381,7 +391,12 @@ wildTravelerSpwanLoop:
 				}
 
 				respCh := make(chan int, 1)
-				msg := createMessage(21, respCh)
+
+				msg := Message{
+					messageType:       21,
+					responseChannel:   respCh,
+					additionalChannel: wildTravelerRespCh,
+				}
 
 				channels[pos.Y][pos.X] <- msg
 
@@ -400,7 +415,7 @@ wildTravelerSpwanLoop:
 				RandGen: nil,
 				Pos:     pos,
 			}
-			go wildTravelerRoutine(t, startTime, reportCh)
+			go wildTravelerRoutine(t, startTime, reportCh, wildTravelerRespCh)
 			symbol++
 			if symbol == 58 {
 				symbol = 48
