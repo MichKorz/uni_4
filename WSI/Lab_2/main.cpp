@@ -6,6 +6,7 @@
 #include <random>
 #include <iostream>
 #include <vector>
+#include <iomanip> // Required for std::setw
 
 
 struct Node {
@@ -53,6 +54,41 @@ std::array<int, 16> generateRandomState() {
     return state;
 }
 
+std::array<int, 16> generateRandomEasyState() {
+    std::array<int, 16> state = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 0
+    };
+
+    std::random_device rd;
+    std::mt19937 rng(rd());
+
+    int zeroIndex = 15; // Initially at bottom-right
+
+    for (int moves = 0; moves < 80; ++moves) {
+        int row = zeroIndex / 4;
+        int col = zeroIndex % 4;
+
+        std::vector<int> possibleMoves;
+
+        // Determine valid moves
+        if (row > 0) possibleMoves.push_back(zeroIndex - 4);     // Up
+        if (row < 3) possibleMoves.push_back(zeroIndex + 4);     // Down
+        if (col > 0) possibleMoves.push_back(zeroIndex - 1);     // Left
+        if (col < 3) possibleMoves.push_back(zeroIndex + 1);     // Right
+
+        std::uniform_int_distribution<int> dist(0, possibleMoves.size() - 1);
+        int nextIndex = possibleMoves[dist(rng)];
+
+        std::swap(state[zeroIndex], state[nextIndex]);
+        zeroIndex = nextIndex;
+    }
+
+    return state;
+}
+
 int manhattanDistance(const std::array<int, 16>& state) {
     int distance = 0;
     for (int i = 0; i < 16; ++i) {
@@ -68,6 +104,63 @@ int manhattanDistance(const std::array<int, 16>& state) {
     }
     return distance;
 }
+
+int linearConflict(const std::array<int, 16>& state) {
+    int distance = 0;
+
+    // Compute Manhattan Distance
+    for (int i = 0; i < 16; ++i) {
+        int value = state[i];
+        if (value == 0) continue;
+
+        int targetRow = (value - 1) / 4;
+        int targetCol = (value - 1) % 4;
+        int currentRow = i / 4;
+        int currentCol = i % 4;
+
+        distance += std::abs(currentRow - targetRow) + std::abs(currentCol - targetCol);
+    }
+
+    // Add linear conflict cost
+    int linearConflicts = 0;
+
+    // Row conflicts
+    for (int row = 0; row < 4; ++row) {
+        for (int i = 0; i < 4; ++i) {
+            int index1 = row * 4 + i;
+            int tile1 = state[index1];
+            if (tile1 == 0 || (tile1 - 1) / 4 != row) continue;
+
+            for (int j = i + 1; j < 4; ++j) {
+                int index2 = row * 4 + j;
+                int tile2 = state[index2];
+                if (tile2 == 0 || (tile2 - 1) / 4 != row) continue;
+
+                if (tile1 > tile2) ++linearConflicts;
+            }
+        }
+    }
+
+    // Column conflicts
+    for (int col = 0; col < 4; ++col) {
+        for (int i = 0; i < 4; ++i) {
+            int index1 = i * 4 + col;
+            int tile1 = state[index1];
+            if (tile1 == 0 || (tile1 - 1) % 4 != col) continue;
+
+            for (int j = i + 1; j < 4; ++j) {
+                int index2 = j * 4 + col;
+                int tile2 = state[index2];
+                if (tile2 == 0 || (tile2 - 1) % 4 != col) continue;
+
+                if (tile1 > tile2) ++linearConflicts;
+            }
+        }
+    }
+
+    return distance + 2 * linearConflicts;
+}
+
 
 bool isSolvable(const std::array<int, 16>& state) {
     int inversions = 0;
@@ -128,6 +221,8 @@ std::vector<std::array<int, 16>> getNeighbours(const std::array<int, 16>& state)
     return neighbours;
 }
 
+long long nodesVisited = 0;
+
 int main()
 {
     // Create the target node
@@ -148,15 +243,16 @@ int main()
     std::unordered_map<uint64_t, Node*> closed;
 
     Node *start = new Node();
-    start->state = generateRandomState();
+    start->state = generateRandomEasyState();
     while (!isSolvable(start->state)) start->state = generateRandomState();
     start->g = 0;
-    start->h = start->f = manhattanDistance(start->state);
+    start->h = start->f = linearConflict(start->state);
     start->parent = nullptr;
     open.push(start);
 
     while (true)
     {
+        nodesVisited++;
         Node *current = open.top(); open.pop();
         // Check if the current node exists in closed
         uint64_t hash = current->encode();
@@ -164,7 +260,7 @@ int main()
         // Check if the current node is the target
         if (*current == *target)
         {
-            target->parent = current;
+            target = current;
             break;
         }
         // Put current in closed
@@ -189,6 +285,27 @@ int main()
             open.push(neighbour);
         }
     }
+
+    Node *current = target;
+    while (current->parent != nullptr)
+    {
+        for (int i = 0; i < 16; ++i) 
+        {
+            std::cout << std::setw(2) << current->state[i] << " ";
+            if ((i + 1) % 4 == 0) std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        current = current->parent;
+    }
+    for (int i = 0; i < 16; ++i) 
+    {
+        std::cout << std::setw(2) << current->state[i] << " ";
+        if ((i + 1) % 4 == 0) std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "Nodes visited: " << nodesVisited << std::endl;
+    std::cout << "Steps: " << target->g << std::endl;
 
     return 0;
 }

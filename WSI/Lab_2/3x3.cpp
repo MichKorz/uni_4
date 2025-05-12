@@ -68,6 +68,63 @@ int manhattanDistance(const std::array<int, 9>& state) {
     return distance;
 }
 
+int linearConflict(const std::array<int, 9>& state) {
+    int distance = 0;
+
+    // Manhattan Distance
+    for (int i = 0; i < 9; ++i) {
+        int value = state[i];
+        if (value == 0) continue;
+
+        int targetRow = (value - 1) / 3;
+        int targetCol = (value - 1) % 3;
+        int currentRow = i / 3;
+        int currentCol = i % 3;
+
+        distance += std::abs(currentRow - targetRow) + std::abs(currentCol - targetCol);
+    }
+
+    // Linear Conflicts
+    int linearConflicts = 0;
+
+    // Row conflicts
+    for (int row = 0; row < 3; ++row) {
+        for (int i = 0; i < 3; ++i) {
+            int index1 = row * 3 + i;
+            int tile1 = state[index1];
+            if (tile1 == 0 || (tile1 - 1) / 3 != row) continue;
+
+            for (int j = i + 1; j < 3; ++j) {
+                int index2 = row * 3 + j;
+                int tile2 = state[index2];
+                if (tile2 == 0 || (tile2 - 1) / 3 != row) continue;
+
+                if (tile1 > tile2) ++linearConflicts;
+            }
+        }
+    }
+
+    // Column conflicts
+    for (int col = 0; col < 3; ++col) {
+        for (int i = 0; i < 3; ++i) {
+            int index1 = i * 3 + col;
+            int tile1 = state[index1];
+            if (tile1 == 0 || (tile1 - 1) % 3 != col) continue;
+
+            for (int j = i + 1; j < 3; ++j) {
+                int index2 = j * 3 + col;
+                int tile2 = state[index2];
+                if (tile2 == 0 || (tile2 - 1) % 3 != col) continue;
+
+                if (tile1 > tile2) ++linearConflicts;
+            }
+        }
+    }
+
+    return distance + 2 * linearConflicts;
+}
+
+
 bool isSolvable(const std::array<int, 9>& state) {
     int inversions = 0;
     for (int i = 0; i < 9; ++i) {
@@ -115,6 +172,8 @@ std::vector<std::array<int, 9>> getNeighbours(const std::array<int, 9>& state) {
     return neighbours;
 }
 
+long long nodesVisited = 0;
+
 int main()
 {
     // Create the target node
@@ -143,6 +202,7 @@ int main()
 
     while (true)
     {
+        nodesVisited++;
         Node *current = open.top(); open.pop();
         // Check if the current node exists in closed
         uint64_t hash = current->encode();
@@ -150,7 +210,7 @@ int main()
         // Check if the current node is the target
         if (*current == *target)
         {
-            target->parent = current;
+            target = current;
             break;
         }
         // Put current in closed
@@ -168,12 +228,33 @@ int main()
             if (closed.find(neighbourHash) != closed.end()) continue;
 
             neighbour->g = current->g + 1;
-            neighbour->h = manhattanDistance(neighbour->state);
+            neighbour->h = linearConflict(neighbour->state);
             neighbour->f = neighbour->g + neighbour->h;
             neighbour->parent = current;
             open.push(neighbour);
         }
     }
+
+    Node *current = target;
+    while (current->parent != nullptr)
+    {
+        for (int i = 0; i < 9; ++i) 
+        {
+            std::cout << current->state[i] << " ";
+            if ((i + 1) % 3 == 0) std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        current = current->parent;
+    }
+    for (int i = 0; i < 9; ++i) 
+    {
+        std::cout << current->state[i] << " ";
+        if ((i + 1) % 3 == 0) std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "Nodes visited: " << nodesVisited << std::endl;
+    std::cout << "Steps: " << target->g << std::endl;
 
     return 0;
 }
