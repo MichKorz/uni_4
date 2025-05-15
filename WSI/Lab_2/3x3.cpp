@@ -8,7 +8,7 @@
 #include <vector>
 
 struct Node {
-    std::array<int, 9> state;
+    std::array<uint8_t, 9> state;
     int g, h, f;
     Node* parent;
 
@@ -34,8 +34,8 @@ struct CompareF {
     }
 };
 
-std::array<int, 9> generateRandomState() {
-    std::array<int, 9> state;
+std::array<uint8_t, 9> generateRandomState() {
+    std::array<uint8_t, 9> state;
     
     // Initialize the state with values 0 to 8
     for (int i = 0; i < 9; ++i) {
@@ -52,7 +52,7 @@ std::array<int, 9> generateRandomState() {
     return state;
 }
 
-int manhattanDistance(const std::array<int, 9>& state) {
+int manhattanDistance(const std::array<uint8_t, 9>& state) {
     int distance = 0;
     for (int i = 0; i < 9; ++i) {
         int value = state[i];
@@ -68,7 +68,7 @@ int manhattanDistance(const std::array<int, 9>& state) {
     return distance;
 }
 
-int linearConflict(const std::array<int, 9>& state) {
+int linearConflict(const std::array<uint8_t, 9>& state) {
     int distance = 0;
 
     // Manhattan Distance
@@ -125,7 +125,7 @@ int linearConflict(const std::array<int, 9>& state) {
 }
 
 
-bool isSolvable(const std::array<int, 9>& state) {
+bool isSolvable(const std::array<uint8_t, 9>& state) {
     int inversions = 0;
     for (int i = 0; i < 9; ++i) {
         if (state[i] == 0) continue;
@@ -139,8 +139,8 @@ bool isSolvable(const std::array<int, 9>& state) {
     return inversions % 2 == 0; // Solvability condition for 8-puzzle
 }
 
-std::vector<std::array<int, 9>> getNeighbours(const std::array<int, 9>& state) {
-    std::vector<std::array<int, 9>> neighbours;
+std::vector<std::array<uint8_t, 9>> getNeighbours(const std::array<uint8_t, 9>& state) {
+    std::vector<std::array<uint8_t, 9>> neighbours;
     int zeroIndex = 0;
 
     // Find the index of the blank tile (0)
@@ -163,7 +163,7 @@ std::vector<std::array<int, 9>> getNeighbours(const std::array<int, 9>& state) {
 
         if (newRow >= 0 && newRow < 3 && newCol >= 0 && newCol < 3) {
             int newIndex = newRow * 3 + newCol;
-            std::array<int, 9> newState = state;
+            std::array<uint8_t, 9> newState = state;
             std::swap(newState[zeroIndex], newState[newIndex]);
             neighbours.push_back(newState);
         }
@@ -217,7 +217,7 @@ int main()
         closed[hash] = current;
 
         // Find neighbours of current node
-        std::vector<std::array<int, 9>> neighbours = getNeighbours(current->state);
+        std::vector<std::array<uint8_t, 9>> neighbours = getNeighbours(current->state);
 
         for (int i = 0; i < neighbours.size(); i++)
         {
