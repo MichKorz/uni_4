@@ -12,7 +12,9 @@ Program działa poniżej sekundy dla rozwiązań wymagających do 51 ruchów. Dl
 
 ## Manhattan Distance
 
-Dla planszy 4x4 o pozycji startowej otrzymanej poprzez cofanie rozwiązania o 100 losowych ruchów, średnia ilość kroków potrzebnych do rozwiązania zagadki wyniosła 11, a średnia liszba odwiedzonych przy rozwiązywaniu stanów wyniosła 99331.07
+### Testy
+
+Dla planszy 4x4 o pozycji startowej otrzymanej poprzez cofanie rozwiązania o 30 losowych ruchów, średnia ilość kroków potrzebnych do rozwiązania zagadki wyniosła 11, a średnia liszba odwiedzonych przy rozwiązywaniu stanów wyniosła 99331.07
 
 ### Czas działania
 
