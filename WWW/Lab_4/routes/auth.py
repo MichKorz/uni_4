@@ -38,7 +38,8 @@ async def register(user: UserCreate):
     new_user = User(
         email=user.email,
         username=user.username,
-        password_hash=hash_password(user.password)
+        password_hash=hash_password(user.password),
+        role = user.role
     )
     await new_user.insert()
     return {"message": "User registered"}

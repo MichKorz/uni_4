@@ -7,7 +7,7 @@ class User(Document):
     username: str
     email: EmailStr
     password_hash: str
-    role: Literal["user", "admin"] = "user"
+    role: Literal["user", "admin"]
     created_at: datetime = datetime.utcnow()
 
     class Settings:
@@ -17,6 +17,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     username: str
     password: str
+    role: Literal["user", "admin"]
 
 class UserLogin(BaseModel):
     email: EmailStr
