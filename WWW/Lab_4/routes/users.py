@@ -8,8 +8,3 @@ router = APIRouter()
 async def get_all_users(admin_user: User = Depends(require_admin)):
     users = await User.find_all().to_list()
     return users
-
-@router.post("/")
-async def create_user(user: User):
-    await user.insert()
-    return {"msg": "User created", "id": str(user.id)}
