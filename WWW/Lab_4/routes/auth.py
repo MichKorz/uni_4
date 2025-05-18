@@ -1,3 +1,4 @@
+import jose
 from fastapi import APIRouter, HTTPException, Depends
 from passlib.context import CryptContext
 from jose import jwt
