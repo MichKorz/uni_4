@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from models.user import User, UserCreate, UserLogin
 from dotenv import load_dotenv
 import os
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter()
 load_dotenv()
@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = HTTPBearer()
 
 
 def hash_password(password: str):
@@ -55,7 +55,8 @@ async def login(credentials: UserLogin):
     )
     return {"access_token": token, "token_type": "bearer"}
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> User:
+    token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
