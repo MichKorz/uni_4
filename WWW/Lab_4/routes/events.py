@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from models.event import Event, EventCreate
 from typing import Optional, List
 from models.user import User
@@ -37,6 +37,9 @@ async def get_events(
 
 @router.post("/")
 async def create_event(event_form: EventCreate, admin_user: User = Depends(require_admin)):
+    existing_event = await Event.find_one(Event.title == event_form.title)
+    if existing_event:
+        raise HTTPException(status_code=401, detail="Event already exists")
     event = Event(title=event_form.title,
                   description=event_form.description,
                   date=event_form.date,
@@ -51,3 +54,4 @@ async def update_date(event_name: str, new_date: datetime, admin_user: User = De
     event = await Event.find_one(Event.title == event_name)
     event.date = new_date
     await event.save()
+    return {"msg": "Event updated", "id": str(event.id)}

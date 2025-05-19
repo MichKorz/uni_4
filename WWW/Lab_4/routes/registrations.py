@@ -23,5 +23,6 @@ async def delete_registration(event_name: str, user: User = Depends(get_current_
     registration = await Registration.find_one(Registration.event_id == event.id)
     if not registration:
         raise HTTPException(status_code=404, detail="Registration not found")
-    registration.status = "Deleted"
+    registration.status = "Cancelled"
     await registration.save()
+    return {"msg": "Registration cancelled", "id": str(registration.id)}
