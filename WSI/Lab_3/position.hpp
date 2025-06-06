@@ -57,19 +57,169 @@ inline void Position::generate_children(int player) {
     }
 }
 
-// Evaluate the current board state
 inline int Position::evaluate(int depth) const {
     int score = 0;
 
-    if (winCheck(board_position, 1)) return 1000 + depth;
+    // Immediate win/lose checks
+    if (winCheck(board_position, 1))   return  1000 + depth;
     if (loseCheck(board_position, 1)) return -1000 - depth;
+    if (winCheck(board_position, 2))   return -1000 - depth;
+    if (loseCheck(board_position, 2)) return  1000 + depth;
 
-    if (winCheck(board_position, 2)) return -1000 - depth;
-    if (loseCheck(board_position, 2)) return 1000 + depth;
+    // Weights for “threat” patterns
+    const int W_THREE_PLUS_ONE = 50;   // three in a row + one empty in a length‐4 window
+    const int W_TWO_PLUS_TWO   = 20;   // two in a row + two empties in a length‐4 window
+    const int W_TWO_PLUS_ONE    = -5;   // two in a row + one empty in a length‐3 window
 
+    // Helper lambda to evaluate sliding windows for a given player
+    auto evalPatterns = [&](int player) {
+        int delta = 0;
+
+        // 1) Length‐4 windows: look for “3 of player + 1 empty”  and “2 of player + 2 empty”
+        //    Count both horizontal, vertical, and both diagonals (\ and /).
+        // Horizontal (rows)
+        for (int r = 0; r < 5; ++r) {
+            for (int c = 0; c <= 5 - 4; ++c) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 4; ++k) {
+                    int v = board_position[r][c + k];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 3 && countEmpty == 1) {
+                    delta += W_THREE_PLUS_ONE;
+                }
+                else if (countPlayer == 2 && countEmpty == 2) {
+                    delta += W_TWO_PLUS_TWO;
+                }
+            }
+        }
+
+        // Vertical (columns)
+        for (int c = 0; c < 5; ++c) {
+            for (int r = 0; r <= 5 - 4; ++r) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 4; ++k) {
+                    int v = board_position[r + k][c];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 3 && countEmpty == 1) {
+                    delta += W_THREE_PLUS_ONE;
+                }
+                else if (countPlayer == 2 && countEmpty == 2) {
+                    delta += W_TWO_PLUS_TWO;
+                }
+            }
+        }
+
+        // Diagonal “\” (top-left → bottom-right)
+        for (int r = 0; r <= 5 - 4; ++r) {
+            for (int c = 0; c <= 5 - 4; ++c) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 4; ++k) {
+                    int v = board_position[r + k][c + k];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 3 && countEmpty == 1) {
+                    delta += W_THREE_PLUS_ONE;
+                }
+                else if (countPlayer == 2 && countEmpty == 2) {
+                    delta += W_TWO_PLUS_TWO;
+                }
+            }
+        }
+
+        // Diagonal “/” (bottom-left → top-right)
+        for (int r = 4; r >= 3; --r) {                 // r goes from 4 down to (4 - (4 - 1)) = 1
+            for (int c = 0; c <= 5 - 4; ++c) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 4; ++k) {
+                    int v = board_position[r - k][c + k];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 3 && countEmpty == 1) {
+                    delta += W_THREE_PLUS_ONE;
+                }
+                else if (countPlayer == 2 && countEmpty == 2) {
+                    delta += W_TWO_PLUS_TWO;
+                }
+            }
+        }
+
+        // 2) Length‐3 windows: look for “2 of player + 1 empty” in rows, columns, diagonals.
+        // Horizontal (rows)
+        for (int r = 0; r < 5; ++r) {
+            for (int c = 0; c <= 5 - 3; ++c) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 3; ++k) {
+                    int v = board_position[r][c + k];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 2 && countEmpty == 1) {
+                    delta += W_TWO_PLUS_ONE;
+                }
+            }
+        }
+
+        // Vertical (columns)
+        for (int c = 0; c < 5; ++c) {
+            for (int r = 0; r <= 5 - 3; ++r) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 3; ++k) {
+                    int v = board_position[r + k][c];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 2 && countEmpty == 1) {
+                    delta += W_TWO_PLUS_ONE;
+                }
+            }
+        }
+
+        // Diagonal “\” (top-left → bottom-right)
+        for (int r = 0; r <= 5 - 3; ++r) {
+            for (int c = 0; c <= 5 - 3; ++c) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 3; ++k) {
+                    int v = board_position[r + k][c + k];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 2 && countEmpty == 1) {
+                    delta += W_TWO_PLUS_ONE;
+                }
+            }
+        }
+
+        // Diagonal “/” (bottom-left → top-right)
+        for (int r = 4; r >= 2; --r) {                 // r goes from 4 down to (4 - (3 - 1)) = 2
+            for (int c = 0; c <= 5 - 3; ++c) {
+                int countPlayer = 0, countEmpty = 0;
+                for (int k = 0; k < 3; ++k) {
+                    int v = board_position[r - k][c + k];
+                    if (v == player)       ++countPlayer;
+                    else if (v == 0)       ++countEmpty;
+                }
+                if (countPlayer == 2 && countEmpty == 1) {
+                    delta += W_TWO_PLUS_ONE;
+                }
+            }
+        }
+
+        return delta;
+    };
+
+    // Evaluate patterns for Player 1 (+) and for Player 2 (–)
+    score += evalPatterns(1);
+    score -= evalPatterns(2);
 
     return score;
 }
+
 
 // Minimax with alpha-beta pruning
 inline int minimax(Position& pos, int depth, int alpha, int beta, bool maximizingPlayer, bool surface) {

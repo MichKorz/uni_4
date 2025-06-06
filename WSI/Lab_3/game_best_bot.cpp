@@ -14,9 +14,9 @@ int main(int argc, char *argv[]) {
   char server_message[16], player_message[16];
 
   bool end_game;
-  int player, msg, move;
+  int player, msg, move, depth;
 
-  if ( argc != 5 ) {
+  if ( argc != 6 ) {
     printf("Wrong number of arguments\n");
     return -1;
   }
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
   }
 
   int board[5][5];
+  depth = atoi(argv[5]);
 
   setBoard(board);
   Position pos;
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
       set_my_board(pos, board);
     }
     if ( (msg == 0) || (msg == 6) ) {
-      move = minimax(pos, 4, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), player == 1, true);
+      move = minimax(pos, depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), player == 1, true);
       setMove(board, move, player);
       set_my_board(pos, board);
       memset(player_message, '\0', sizeof(player_message));
