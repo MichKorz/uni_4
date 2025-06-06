@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "board.h"
+
 constexpr int BOARD_SIZE = 5;
 
 // Spiral order indices (precomputed)
@@ -18,56 +20,6 @@ inline constexpr std::array<int, 25> spiral_indices = {
     20, 15, 10, 5, 0,
     1, 2, 3, 4, 18
 };
-
-const int my_win[28][4][2] = {
-    { {0, 0}, {0, 1}, {0, 2}, {0, 3} },
-    { {1, 0}, {1, 1}, {1, 2}, {1, 3} },
-    { {2, 0}, {2, 1}, {2, 2}, {2, 3} },
-    { {3, 0}, {3, 1}, {3, 2}, {3, 3} },
-    { {4, 0}, {4, 1}, {4, 2}, {4, 3} },
-    { {0, 1}, {0, 2}, {0, 3}, {0, 4} },
-    { {1, 1}, {1, 2}, {1, 3}, {1, 4} },
-    { {2, 1}, {2, 2}, {2, 3}, {2, 4} },
-    { {3, 1}, {3, 2}, {3, 3}, {3, 4} },
-    { {4, 1}, {4, 2}, {4, 3}, {4, 4} },
-    { {0, 0}, {1, 0}, {2, 0}, {3, 0} },
-    { {0, 1}, {1, 1}, {2, 1}, {3, 1} },
-    { {0, 2}, {1, 2}, {2, 2}, {3, 2} },
-    { {0, 3}, {1, 3}, {2, 3}, {3, 3} },
-    { {0, 4}, {1, 4}, {2, 4}, {3, 4} },
-    { {1, 0}, {2, 0}, {3, 0}, {4, 0} },
-    { {1, 1}, {2, 1}, {3, 1}, {4, 1} },
-    { {1, 2}, {2, 2}, {3, 2}, {4, 2} },
-    { {1, 3}, {2, 3}, {3, 3}, {4, 3} },
-    { {1, 4}, {2, 4}, {3, 4}, {4, 4} },
-    { {0, 1}, {1, 2}, {2, 3}, {3, 4} },
-    { {0, 0}, {1, 1}, {2, 2}, {3, 3} },
-    { {1, 1}, {2, 2}, {3, 3}, {4, 4} },
-    { {1, 0}, {2, 1}, {3, 2}, {4, 3} },
-    { {0, 3}, {1, 2}, {2, 1}, {3, 0} },
-    { {0, 4}, {1, 3}, {2, 2}, {3, 1} },
-    { {1, 3}, {2, 2}, {3, 1}, {4, 0} },
-    { {1, 4}, {2, 3}, {3, 2}, {4, 1} }
-  };
-  
-  const int my_lose[48][3][2] = {
-    { {0, 0}, {0, 1}, {0, 2} }, { {0, 1}, {0, 2}, {0, 3} }, { {0, 2}, {0, 3}, {0, 4} },
-    { {1, 0}, {1, 1}, {1, 2} }, { {1, 1}, {1, 2}, {1, 3} }, { {1, 2}, {1, 3}, {1, 4} },
-    { {2, 0}, {2, 1}, {2, 2} }, { {2, 1}, {2, 2}, {2, 3} }, { {2, 2}, {2, 3}, {2, 4} },
-    { {3, 0}, {3, 1}, {3, 2} }, { {3, 1}, {3, 2}, {3, 3} }, { {3, 2}, {3, 3}, {3, 4} },
-    { {4, 0}, {4, 1}, {4, 2} }, { {4, 1}, {4, 2}, {4, 3} }, { {4, 2}, {4, 3}, {4, 4} },
-    { {0, 0}, {1, 0}, {2, 0} }, { {1, 0}, {2, 0}, {3, 0} }, { {2, 0}, {3, 0}, {4, 0} },
-    { {0, 1}, {1, 1}, {2, 1} }, { {1, 1}, {2, 1}, {3, 1} }, { {2, 1}, {3, 1}, {4, 1} },
-    { {0, 2}, {1, 2}, {2, 2} }, { {1, 2}, {2, 2}, {3, 2} }, { {2, 2}, {3, 2}, {4, 2} },
-    { {0, 3}, {1, 3}, {2, 3} }, { {1, 3}, {2, 3}, {3, 3} }, { {2, 3}, {3, 3}, {4, 3} },
-    { {0, 4}, {1, 4}, {2, 4} }, { {1, 4}, {2, 4}, {3, 4} }, { {2, 4}, {3, 4}, {4, 4} },
-    { {0, 2}, {1, 3}, {2, 4} }, { {0, 1}, {1, 2}, {2, 3} }, { {1, 2}, {2, 3}, {3, 4} },
-    { {0, 0}, {1, 1}, {2, 2} }, { {1, 1}, {2, 2}, {3, 3} }, { {2, 2}, {3, 3}, {4, 4} },
-    { {1, 0}, {2, 1}, {3, 2} }, { {2, 1}, {3, 2}, {4, 3} }, { {2, 0}, {3, 1}, {4, 2} },
-    { {0, 2}, {1, 1}, {2, 0} }, { {0, 3}, {1, 2}, {2, 1} }, { {1, 2}, {2, 1}, {3, 0} },
-    { {0, 4}, {1, 3}, {2, 2} }, { {1, 3}, {2, 2}, {3, 1} }, { {2, 2}, {3, 1}, {4, 0} },
-    { {1, 4}, {2, 3}, {3, 2} }, { {2, 3}, {3, 2}, {4, 1} }, { {2, 4}, {3, 3}, {4, 2} }
-  };
 
 struct Position {
     int parent_move;
@@ -109,48 +61,11 @@ inline void Position::generate_children(int player) {
 inline int Position::evaluate(int depth) const {
     int score = 0;
 
-    int player = 1;
+    if (winCheck(board_position, 1)) return 1000 + depth;
+    if (loseCheck(board_position, 1)) return -1000 - depth;
 
-    bool w = false;
-    for (int i = 0; i < 28; i++)
-        if ( (board_position[my_win[i][0][0]][my_win[i][0][1]] == player) &&
-            (board_position[my_win[i][1][0]][my_win[i][1][1]] == player) &&
-            (board_position[my_win[i][2][0]][my_win[i][2][1]] == player) &&
-            (board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
-        w = true;
-
-    if (w) return 1000 + depth;
-      
-    bool l = false;
-    for (int i = 0; i < 48; i++)
-        if ( (board_position[my_lose[i][0][0]][my_lose[i][0][1]] == player) &&
-            (board_position[my_lose[i][1][0]][my_lose[i][1][1]] == player) &&
-            (board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
-        l = true;
-    
-    if (l) return -1000 - depth;
-
-
-    player = 2;
-
-    w = false;
-    for (int i = 0; i < 28; i++)
-        if ( (board_position[my_win[i][0][0]][my_win[i][0][1]] == player) &&
-            (board_position[my_win[i][1][0]][my_win[i][1][1]] == player) &&
-            (board_position[my_win[i][2][0]][my_win[i][2][1]] == player) &&
-            (board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
-        w = true;
-
-    if (w) return -1000 - depth;
-      
-    l = false;
-    for (int i = 0; i < 48; i++)
-        if ( (board_position[my_lose[i][0][0]][my_lose[i][0][1]] == player) &&
-            (board_position[my_lose[i][1][0]][my_lose[i][1][1]] == player) &&
-            (board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
-        l = true;
-    
-    if (l) return 1000 + depth;
+    if (winCheck(board_position, 2)) return -1000 - depth;
+    if (loseCheck(board_position, 2)) return 1000 + depth;
 
 
     return score;
@@ -160,47 +75,11 @@ inline int Position::evaluate(int depth) const {
 inline int minimax(Position& pos, int depth, int alpha, int beta, bool maximizingPlayer, bool surface) {
     int parent_move;
 
-    int player = 1;
+    if (winCheck(pos.board_position, 1)) return 1000 + depth;
+    if (loseCheck(pos.board_position, 1)) return -1000 - depth;
 
-    bool w = false;
-    for (int i = 0; i < 28; i++)
-        if ( (pos.board_position[my_win[i][0][0]][my_win[i][0][1]] == player) &&
-            (pos.board_position[my_win[i][1][0]][my_win[i][1][1]] == player) &&
-            (pos.board_position[my_win[i][2][0]][my_win[i][2][1]] == player) &&
-            (pos.board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
-        w = true;
-
-    if (w) return 1000 + depth;
-      
-    bool l = false;
-    for (int i = 0; i < 48; i++)
-        if ( (pos.board_position[my_lose[i][0][0]][my_lose[i][0][1]] == player) &&
-            (pos.board_position[my_lose[i][1][0]][my_lose[i][1][1]] == player) &&
-            (pos.board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
-        l = true;
-    
-    if (l) return -1000 - depth;
-
-    player = 2;
-
-    w = false;
-    for (int i = 0; i < 28; i++)
-        if ( (pos.board_position[my_win[i][0][0]][my_win[i][0][1]] == player) &&
-            (pos.board_position[my_win[i][1][0]][my_win[i][1][1]] == player) &&
-            (pos.board_position[my_win[i][2][0]][my_win[i][2][1]] == player) &&
-            (pos.board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
-        w = true;
-
-    if (w) return -1000 - depth;
-      
-    l = false;
-    for (int i = 0; i < 48; i++)
-        if ( (pos.board_position[my_lose[i][0][0]][my_lose[i][0][1]] == player) &&
-            (pos.board_position[my_lose[i][1][0]][my_lose[i][1][1]] == player) &&
-            (pos.board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
-        l = true;
-    
-    if (l) return 1000 + depth;
+    if (winCheck(pos.board_position, 2)) return -1000 - depth;
+    if (loseCheck(pos.board_position, 2)) return 1000 + depth;
 
 
 

@@ -56,7 +56,9 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  setBoard();
+  int board[5][5];
+
+  setBoard(board);
   Position pos;
   set_my_board(pos, board);
   end_game = false;
@@ -72,12 +74,12 @@ int main(int argc, char *argv[]) {
     move = msg%100;
     msg = msg/100;
     if ( move != 0 ) {
-      setMove(move, 3-player);
+      setMove(board, move, 3-player);
       set_my_board(pos, board);
     }
     if ( (msg == 0) || (msg == 6) ) {
       move = minimax(pos, 4, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), player == 1, true);
-      setMove(move, player);
+      setMove(board, move, player);
       set_my_board(pos, board);
       memset(player_message, '\0', sizeof(player_message));
       snprintf(player_message, sizeof(player_message), "%d", move);

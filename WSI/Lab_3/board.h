@@ -6,8 +6,6 @@ Plansza ver. 0.2
 #pragma once
 #include <stdio.h>
 
-int board[5][5];
-
 const int win[28][4][2] = {
   { {0, 0}, {0, 1}, {0, 2}, {0, 3} },
   { {1, 0}, {1, 1}, {1, 2}, {1, 3} },
@@ -58,13 +56,13 @@ const int lose[48][3][2] = {
   { {1, 4}, {2, 3}, {3, 2} }, { {2, 3}, {3, 2}, {4, 1} }, { {2, 4}, {3, 3}, {4, 2} }
 };
 
-void setBoard() {
+void setBoard(int (*board)[5]) {
   for (int i = 0; i < 5; i++)
     for (int j = 0; j < 5; j++)
       board[i][j] = 0;
 }
 
-void printBoard() {
+void printBoard(const int (*board)[5]) {
   printf("  1 2 3 4 5\n");
   for (int i = 0; i < 5; i++) {
     printf("%d", i+1);
@@ -79,7 +77,7 @@ void printBoard() {
   printf("\n");
 }
 
-bool setMove(int move, int player) {
+bool setMove(int (*board)[5], int move, int player) {
   int i, j;
   i = (move/10)-1;
   j = (move%10)-1;
@@ -89,7 +87,7 @@ bool setMove(int move, int player) {
   return true;
 }
 
-bool winCheck(int player) {
+bool winCheck(const int (*board)[5], int player) {
   bool w = false;
   for (int i = 0; i < 28; i++)
     if ( (board[win[i][0][0]][win[i][0][1]] == player) &&
@@ -100,7 +98,7 @@ bool winCheck(int player) {
   return w;
 }
 
-bool loseCheck(int player) {
+bool loseCheck(const int (*board)[5], int player) {
   bool l = false;
   for (int i = 0; i < 48; i++)
     if ( (board[lose[i][0][0]][lose[i][0][1]] == player) &&
