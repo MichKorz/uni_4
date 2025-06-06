@@ -76,7 +76,7 @@ struct Position {
 
     void generate_children(int player);
     void free_children();
-    int evaluate() const;
+    int evaluate(int depth) const;
 };
 
 // Free all dynamically allocated children
@@ -106,7 +106,7 @@ inline void Position::generate_children(int player) {
 }
 
 // Evaluate the current board state
-inline int Position::evaluate() const {
+inline int Position::evaluate(int depth) const {
     int score = 0;
 
     int player = 1;
@@ -119,7 +119,7 @@ inline int Position::evaluate() const {
             (board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
         w = true;
 
-    if (w) return 1000;
+    if (w) return 1000 + depth;
       
     bool l = false;
     for (int i = 0; i < 48; i++)
@@ -128,7 +128,7 @@ inline int Position::evaluate() const {
             (board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
         l = true;
     
-    if (l) return -1000;
+    if (l) return -1000 - depth;
 
 
     player = 2;
@@ -141,7 +141,7 @@ inline int Position::evaluate() const {
             (board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
         w = true;
 
-    if (w) return -1000;
+    if (w) return -1000 - depth;
       
     l = false;
     for (int i = 0; i < 48; i++)
@@ -150,7 +150,7 @@ inline int Position::evaluate() const {
             (board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
         l = true;
     
-    if (l) return 1000;
+    if (l) return 1000 + depth;
 
 
     return score;
@@ -170,7 +170,7 @@ inline int minimax(Position& pos, int depth, int alpha, int beta, bool maximizin
             (pos.board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
         w = true;
 
-    if (w) return 1000;
+    if (w) return 1000 + depth;
       
     bool l = false;
     for (int i = 0; i < 48; i++)
@@ -179,20 +179,43 @@ inline int minimax(Position& pos, int depth, int alpha, int beta, bool maximizin
             (pos.board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
         l = true;
     
-    if (l) return -1000;
+    if (l) return -1000 - depth;
+
+    player = 2;
+
+    w = false;
+    for (int i = 0; i < 28; i++)
+        if ( (pos.board_position[my_win[i][0][0]][my_win[i][0][1]] == player) &&
+            (pos.board_position[my_win[i][1][0]][my_win[i][1][1]] == player) &&
+            (pos.board_position[my_win[i][2][0]][my_win[i][2][1]] == player) &&
+            (pos.board_position[my_win[i][3][0]][my_win[i][3][1]] == player) )
+        w = true;
+
+    if (w) return -1000 - depth;
+      
+    l = false;
+    for (int i = 0; i < 48; i++)
+        if ( (pos.board_position[my_lose[i][0][0]][my_lose[i][0][1]] == player) &&
+            (pos.board_position[my_lose[i][1][0]][my_lose[i][1][1]] == player) &&
+            (pos.board_position[my_lose[i][2][0]][my_lose[i][2][1]] == player) )
+        l = true;
+    
+    if (l) return 1000 + depth;
+
+
 
     if (depth == 0) {
-        return pos.evaluate();
+        return pos.evaluate(depth);
     }
 
     int current_player_for_children = maximizingPlayer ? 1 : 2;
     pos.generate_children(current_player_for_children);
 
     if (pos.children.empty()) {
-        return pos.evaluate();
+        return pos.evaluate(depth);
     }
 
-    int bestScore;
+    int bestScore = 0;
     if (maximizingPlayer) {
         bestScore = std::numeric_limits<int>::min();
         for (Position* child : pos.children) {
@@ -215,22 +238,38 @@ inline int minimax(Position& pos, int depth, int alpha, int beta, bool maximizin
             if (score > bestScore) parent_move = child->parent_move;
             bestScore = std::max(bestScore, score);
             alpha = std::max(alpha, score);
-            // if (beta <= alpha) {
-            //     break;
-            // }
+            if (beta <= alpha) {
+                break;
+            }
         }
         if (surface) std::cout << "NEW POSITION" << std::endl;
     } else { 
         bestScore = std::numeric_limits<int>::max();
         for (Position* child : pos.children) {
             int score = minimax(*child, depth - 1, alpha, beta, true, false);
+
+            if (surface)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    for (int j = 0; j < 5; j++)
+                    {
+                        std::cout << child->board_position[i][j] << " ";
+                    }
+                }
+            }
+
+            if (surface) std::cout << " score: " << score;
+            if (surface) std::cout << " parent_move: " << child->parent_move << std::endl;
+
             if (score < bestScore) parent_move = child->parent_move;
             bestScore = std::min(bestScore, score);
             beta = std::min(beta, score);
-            // if (beta <= alpha) {
-            //     break;
-            // }
+            if (beta <= alpha) {
+                break;
+            }
         }
+        if (surface) std::cout << "NEW POSITION" << std::endl;
     }
     pos.free_children(); // Clean up children generated at this level
     if (surface) return parent_move;
