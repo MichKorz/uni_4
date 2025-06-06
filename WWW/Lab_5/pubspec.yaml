@@ -1,0 +1,15 @@
+name: event_app
+description: A Flutter SPA for events & registrations
+publish_to: "none"
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.0.5
+  http: ^0.13.5
+  shared_preferences: ^2.0.15
+
+flutter:
+  uses-material-design: true

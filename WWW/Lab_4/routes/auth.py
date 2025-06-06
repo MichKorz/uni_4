@@ -73,3 +73,34 @@ async def require_admin(user: User = Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     return user
+
+# from google.oauth2 import id_token
+# from google.auth.transport import requests as google_requests
+#
+# @router.post("/google")
+# async def google_login(id_token_str: str):
+#     try:
+#         info = id_token.verify_oauth2_token(
+#             id_token_str,
+#             google_requests.Request(),
+#             os.getenv("GOOGLE_CLIENT_ID")  # optional: specify client_id to enforce audience check
+#         )
+#         email = info["email"]
+#         name = info.get("name", "unknown")
+#
+#         user = await User.find_one(User.email == email)
+#         if not user:
+#             user = User(
+#                 email=email,
+#                 username=name,
+#                 password_hash="",
+#                 role="user"
+#             )
+#             await user.insert()
+#
+#         token = create_token({"sub": str(user.id), "role": user.role},
+#                              timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+#         return {"access_token": token, "token_type": "bearer"}
+#
+#     except ValueError:
+#         raise HTTPException(status_code=401, detail="Invalid Google token")
