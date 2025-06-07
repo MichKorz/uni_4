@@ -5,11 +5,6 @@ import 'providers/event_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/registration_provider.dart';
 import 'screens/login_screen.dart';
-import 'screens/register_screen.dart';
-import 'screens/event_list_screen.dart';
-import 'screens/create_event_screen.dart';
-import 'screens/profile_screen.dart';
-import 'screens/registration_screen.dart';
 
 void main() {
   runApp(

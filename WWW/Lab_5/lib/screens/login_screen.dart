@@ -71,6 +71,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: const Text('Create Account'),
               ),
+              ElevatedButton.icon(
+                icon: Icon(Icons.login),
+                label: Text('Sign in with Google'),
+                onPressed: () async {
+                  final success = await Provider.of<AuthProvider>(context, listen: false).googleLogin();
+                  if (success) {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const EventListScreen()));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Google sign-in failed")));
+                  }
+                },
+              ),
             ],
           ),
         ),
