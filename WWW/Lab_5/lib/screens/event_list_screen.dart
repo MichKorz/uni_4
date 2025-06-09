@@ -4,7 +4,6 @@ import '../providers/event_provider.dart';
 import '../providers/registration_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/event_card.dart';
-import '../models/event.dart';
 
 class EventListScreen extends StatefulWidget {
   const EventListScreen({super.key});

@@ -94,6 +94,7 @@ from google.auth.transport import requests as google_requests
 
 @router.post("/google")
 async def google_login(id_token_str: str):
+    print (id_token_str)
     try:
         info = id_token.verify_oauth2_token(
             id_token_str,

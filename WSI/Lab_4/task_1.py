@@ -37,23 +37,40 @@ def plot_cluster_digit_matrix(model, labels, n_clusters):
             confusion[cluster_id][digit] = count[digit]
     percentages = confusion / confusion.sum(axis=1, keepdims=True) * 100
 
-    plt.figure(figsize=(10, 8))
+    height = n_clusters * 0.5  # Adjust row scaling
+    width = 10  # Fixed width for 10 digits
+
+    plt.figure(figsize=(width, height))
     sns.heatmap(percentages, annot=True, fmt=".1f", cmap='Blues', xticklabels=range(10), yticklabels=range(n_clusters))
     plt.xlabel("Digit")
     plt.ylabel("Cluster")
     plt.title(f"Digit Distribution in {n_clusters} Clusters (%)")
+    plt.tight_layout()
     plt.show()
+
 
 # Show centroid images
 def plot_centroids(model):
     centroids = model.cluster_centers_
-    plt.figure(figsize=(10, 10))
+    n = len(centroids)
+    cols = int(np.ceil(np.sqrt(n)))
+    rows = int(np.ceil(n / cols))
+
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 2, rows * 2))
+    axes = axes.flatten()
+
     for i in range(len(centroids)):
-        plt.subplot(int(np.sqrt(len(centroids))), int(np.ceil(len(centroids) / np.sqrt(len(centroids)))), i + 1)
-        plt.imshow(centroids[i].reshape(28, 28), cmap='gray')
-        plt.axis('off')
+        axes[i].imshow(centroids[i].reshape(28, 28), cmap='gray')
+        axes[i].axis('off')
+
+    # Turn off any unused subplots
+    for j in range(len(centroids), len(axes)):
+        axes[j].axis('off')
+
     plt.suptitle("Cluster Centroids as Images")
+    plt.tight_layout()
     plt.show()
+
 
 # Full pipeline
 def run_all(n_clusters_list):
@@ -68,3 +85,4 @@ def run_all(n_clusters_list):
 
 # Run for 10, 15, 20, 30 clusters
 run_all([10, 15, 20, 30])
+#run_all([10])

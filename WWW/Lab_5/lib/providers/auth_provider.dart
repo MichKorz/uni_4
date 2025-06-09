@@ -62,6 +62,8 @@ class AuthProvider extends ChangeNotifier {
       final authData = await account?.authentication;
       final idToken = authData?.idToken;
 
+      print(idToken);
+
       if (idToken == null) return false;
 
       final response = await http.post(

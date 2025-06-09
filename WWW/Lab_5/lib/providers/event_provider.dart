@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../services/api_service.dart';
-import 'package:http/http.dart' as http;
 
 class EventProvider extends ChangeNotifier {
   final ApiService _api = ApiService();
